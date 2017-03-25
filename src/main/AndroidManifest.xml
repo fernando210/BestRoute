@@ -21,6 +21,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="fgv.View.VRota" />
+
         <meta-data
             android:name="com.google.android.maps.v4.API_KEY"
             android:value="AIzaSyD2AwGKR4LsWwBaLTPy8_5ISbhFoAmfG0k"/>
