@@ -12,64 +12,120 @@ import fgv.DAO.PassageiroDAO;
 
 public class MPassageiro {
 
-    private int cdPassageiro;
-    private String cpfPassageiro;
-    private String nomePassageiro;
-    private String telefonePassageiro;
-    private String enderecoPassageiro;
-    private int cdDestino;
+    PassageiroDAO pd = new PassageiroDAO();
+
+    private int id;
+    private String cpf;
+    private String nome;
+    private String telefone;
+    private String logradouro;
+    private String cidade;
+    private String estado;
+    private String bairro;
+    private String latitude;
+    private String longitude;
+    private int idDestino;
     private String nomeResponsavel;
     private String telefoneResponsavel;
-    private String emailResponsavel;
+
+    public int getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(int ativo) {
+        this.ativo = ativo;
+    }
+
+    private int ativo;
 
     private PassageiroDAO passageiroDao;
 
-    public int getCdPassageiro() {
-        return cdPassageiro;
+    public int getId() {
+        return id;
     }
 
-    public void setCdPassageiro(int cdPassageiro) {
-        this.cdPassageiro = cdPassageiro;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getCpfPassageiro() {
-        return cpfPassageiro;
+    public String getCpf() {
+        return cpf;
     }
 
-    public void setCpfPassageiro(String cpfPassageiro) {
-        this.cpfPassageiro = cpfPassageiro;
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
-    public String getNomePassageiro() {
-        return nomePassageiro;
+    public String getNome() {
+        return nome;
     }
 
-    public void setNomePassageiro(String nomePassageiro) {
-        this.nomePassageiro = nomePassageiro;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public String getTelefonePassageiro() {
-        return telefonePassageiro;
+    public String getTelefone() {
+        return telefone;
     }
 
-    public void setTelefonePassageiro(String telefonePassageiro) {
-        this.telefonePassageiro = telefonePassageiro;
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 
-    public String getEnderecoPassageiro() {
-        return enderecoPassageiro;
+    public String getLogradouro() {
+        return logradouro;
     }
 
-    public void setEnderecoPassageiro(String enderecoPassageiro) {
-        this.enderecoPassageiro = enderecoPassageiro;
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
     }
 
-    public int getCdDestino() {
-        return cdDestino;
+    public String getCidade() {
+        return cidade;
     }
 
-    public void setCdDestino(int cdDestino) {
-        this.cdDestino = cdDestino;
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public int getIdDestino() {
+        return idDestino;
+    }
+
+    public void setIdDestino(int idDestino) {
+        this.idDestino = idDestino;
     }
 
     public String getNomeResponsavel() {
@@ -88,23 +144,23 @@ public class MPassageiro {
         this.telefoneResponsavel = telefoneResponsavel;
     }
 
-    public String getEmailResponsavel() {
-        return emailResponsavel;
+    public PassageiroDAO getPassageiroDao() {
+        return passageiroDao;
     }
 
-    public void setEmailResponsavel(String emailResponsavel) {
-        this.emailResponsavel = emailResponsavel;
+    public void setPassageiroDao(PassageiroDAO passageiroDao) {
+        this.passageiroDao = passageiroDao;
     }
 
     private void setPassageiroDao(){
-        
+
         Context c = null;
         if(passageiroDao == null)
-            passageiroDao = new PassageiroDAO(c);
+            passageiroDao = new PassageiroDAO();
     }
 
-    public void inserirPassageiro(){
-
+    public boolean inserirPassageiro(MPassageiro mp){
+        return pd.inserirPassageiro(mp);
     }
 
     public ArrayList<MPassageiro> selecionarPassageiros(){
@@ -121,12 +177,10 @@ public class MPassageiro {
 
     }
 
-    public ArrayList<MPassageiro> consultarPassageiro(){
+    public MPassageiro consultarPassageiro(int id){
         setPassageiroDao();
-        return passageiroDao.consultarPassageiro();
-
+        return passageiroDao.consultarPassageiro(id);
     }
-
 
 }
 

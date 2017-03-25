@@ -1,7 +1,6 @@
 package fgv.Controller;
 
 import java.util.ArrayList;
-
 import fgv.DAO.PassageiroDAO;
 import fgv.Model.MPassageiro;
 
@@ -11,14 +10,14 @@ import fgv.Model.MPassageiro;
 
 public class CPassageiro {
 
-    MPassageiro passageiro;
+    MPassageiro passageiro = new MPassageiro();
 
     private void setMPassageiro(){
         if(passageiro == null)
             passageiro = new MPassageiro();
     }
-    public void inserirPassageiro(){
-
+    public boolean inserirPassageiro(MPassageiro p){
+        return passageiro.inserirPassageiro(p);
     }
 
     public ArrayList<MPassageiro> selecionarPassageiros(){
@@ -27,9 +26,9 @@ public class CPassageiro {
         return passageiros;
     }
 
-    public ArrayList<MPassageiro> consultarPassageiro(){
+    public MPassageiro consultarPassageiro(int id){
         setMPassageiro();
-        return passageiro.consultarPassageiro();
+        return passageiro.consultarPassageiro(id);
     }
 
     public void alterarPassageiro(){

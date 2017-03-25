@@ -101,15 +101,15 @@ public class GoogleAPI extends Core {
 
         for (int i = 0; i < rota.getPassageiros().size(); i++){
             if((i+1) < rota.getPassageiros().size()){
-                duracao = identificarTempoProximoDestino(rota.getPassageiros().get(i).getEnderecoPassageiro(),
-                        rota.getPassageiros().get(i+1).getEnderecoPassageiro(),"value");
+                duracao = identificarTempoProximoDestino(rota.getPassageiros().get(i).getLogradouro(),
+                        rota.getPassageiros().get(i+1).getLogradouro(),"value");
             }
             else{
-                duracao = identificarTempoProximoDestino(rota.getPassageiros().get(i).getEnderecoPassageiro(),
+                duracao = identificarTempoProximoDestino(rota.getPassageiros().get(i).getLogradouro(),
                         rota.getDestino(),"value");
             }
             duracao = duracao.toLowerCase().replace("min","").replace("mins","").trim();
-            rota.setTempoProxDest(rota.getPassageiros().get(i).getCdPassageiro(),Integer.valueOf(duracao));
+            rota.setTempoProxDest(rota.getPassageiros().get(i).getId(),Integer.valueOf(duracao));
             tempoTotal += Integer.valueOf(duracao);
         }
         rota.setTempoTotal(tempoTotal);

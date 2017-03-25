@@ -7,6 +7,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import fgv.Model.MPassageiro;
@@ -17,104 +21,156 @@ import fgv.Model.MPassageiro;
 
 public class PassageiroDAO {
 
-    public static final String KEY_CD_DESTINO = "_cdDestino";
-    public static final String KEY_CD_PASSAGEIRO = "_cdPassageiro";
-    public static final String KEY_CPF_PASSAGEIRO = "_cpfPassageiro";
-    public static final String KEY_NOME_PASSAGEIRO = "_nomePassageiro";
-    public static final String KEY_EMAIL_RESPONSAVEL = "_emailResponsavel";
-    public static final String KEY_END_PASSAGEIRO = "_endPassageiro";
-    public static final String KEY_TEL_PASSAGEIRO = "_telPassageiro";
-    public static final String KEY_TEL_RESPONSAVEL = "_telResponsavel";
-    private static final String TAG = "DBAdapter";
+    public boolean inserirPassageiro(MPassageiro passageiro){
 
-    private static final String DATABASE_NAME = "DbBestRoute";
-    private static final String DATABASE_TABLE = "TB_PASSAGEIRO";
-    private static final int DATABASE_VERSION = 2;
+        ConnectionFactory conexao = new ConnectionFactory();
+        ObjetoConexao objConexao = new ObjetoConexao();
+        Connection conn = conexao.dbConnect(objConexao);
+        if (conn != null) {
+            try {
+                Statement statement = conn.createStatement();
+                String queryString = "INSERT INTO TB_PASSAGEIRO VALUES( '" +
+                        passageiro.getCpf() + "', '" +
+                        passageiro.getNome()+ "', '" +
+                        passageiro.getTelefone()+ "', '" +
+                        passageiro.getLogradouro()+ "', '" +
+                        passageiro.getCidade()+ "', '" +
+                        passageiro.getEstado()+ "', '" +
+                        passageiro.getBairro()+ "', '" +
+                        passageiro.getLatitude()+ "', '" +
+                        passageiro.getLongitude()+ "', " +
+                        passageiro.getIdDestino()+ ", '" +
+                        passageiro.getNomeResponsavel()+ "', '" +
+                        passageiro.getTelefoneResponsavel() +
+                        "', Ativo = 1 ";
 
-    private final Context context;
-
-    private DatabaseHelper DBHelper;
-    private SQLiteDatabase db;
-
-
-    public PassageiroDAO(Context ctx)
-    {
-        this.context = ctx;
-        DBHelper = new DatabaseHelper(context);
+                statement.execute(queryString);
+                conn.close();
+                return true;
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+                return false;
+            }
+        }
+            return false;
     }
 
-    private static class DatabaseHelper extends SQLiteOpenHelper
-    {
-        DatabaseHelper(Context context)
-        {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public MPassageiro consultarPassageiro(int id){
+
+        MPassageiro passageiro = new MPassageiro();
+
+        ConnectionFactory conexao = new ConnectionFactory();
+        ObjetoConexao objConexao = new ObjetoConexao();
+        Connection conn = conexao.dbConnect(objConexao);
+        if (conn != null) {
+            try {
+                Statement statement = conn.createStatement();
+                String queryString = "select nome from TB_PASSAGEIRO where id = 1";
+                ResultSet rs;
+                rs = statement.executeQuery(queryString);
+                if (rs.next()) {
+                    passageiro.setId(rs.getInt("Id"));
+                    passageiro.setCpf(rs.getString("Cpf"));
+                    passageiro.setNome(rs.getString("Nome"));
+                    passageiro.setTelefone(rs.getString("Telefone"));
+                    passageiro.setLogradouro(rs.getString("Logradouro"));
+                    passageiro.setCidade(rs.getString("Cidade"));
+                    passageiro.setEstado(rs.getString("Estado"));
+                    passageiro.setBairro(rs.getString("Bairro"));
+                    passageiro.setLatitude(rs.getString("Latitude"));
+                    passageiro.setLongitude(rs.getString("Longitude"));
+                    passageiro.setIdDestino(rs.getInt("IdDestino"));
+                    passageiro.setNomeResponsavel(rs.getString("NomeResponsavel"));
+                    passageiro.setTelefoneResponsavel(rs.getString("TelefoneResponsavel"));
+                    passageiro.setAtivo(rs.getInt("Ativo"));
+                }
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
-        @Override
-        public void onCreate(SQLiteDatabase db)
-        {
+        return passageiro;
+    }
+
+    public boolean alterarPassageiro(MPassageiro passageiro){
+
+        ConnectionFactory conexao = new ConnectionFactory();
+        ObjetoConexao objConexao = new ObjetoConexao();
+        Connection conn = conexao.dbConnect(objConexao);
+        if (conn != null) {
+            try {
+                Statement statement = conn.createStatement();
+                String queryString = "UPDATE TB_PASSAGEIRO SET Cpf = '" +
+                        passageiro.getCpf() + "', Nome = '" +
+                        passageiro.getNome()+ "', Telefone = '" +
+                        passageiro.getTelefone()+ "', Logradouro = '" +
+                        passageiro.getLogradouro()+ "', Cidade = '" +
+                        passageiro.getCidade()+ "', Estado = '" +
+                        passageiro.getEstado()+ "', Bairro = '" +
+                        passageiro.getBairro()+ "', Latitude = '" +
+                        passageiro.getLatitude()+ "', Longitude = '" +
+                        passageiro.getLongitude()+ "', IdDestino = " +
+                        passageiro.getIdDestino()+ ", NomeResponsavel = '" +
+                        passageiro.getNomeResponsavel()+ "', TelefoneResponsavel = '" +
+                        passageiro.getTelefoneResponsavel()+
+                        "' WHERE Id = " + passageiro.getId();
+
+                statement.execute(queryString);
+                conn.close();
+                return true;
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+                return false;
+            }
         }
+        return false;
+    }
 
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
-        {
+    public boolean excluirPassageiro(MPassageiro passageiro){
+
+        ConnectionFactory conexao = new ConnectionFactory();
+        ObjetoConexao objConexao = new ObjetoConexao();
+        Connection conn = conexao.dbConnect(objConexao);
+        if (conn != null) {
+            try {
+                Statement statement = conn.createStatement();
+                String queryString = "UPDATE TB_PASSAGEIRO SET ATIVO = 0 WHERE Id = " + passageiro.getId();
+
+                statement.execute(queryString);
+                conn.close();
+                return true;
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+                return false;
+            }
         }
+        return false;
     }
 
-    public PassageiroDAO open() throws SQLException
-    {
-        db = DBHelper.getWritableDatabase();
-        return this;
-    }
-
-    public void close()
-    {
-        DBHelper.close();
-    }
-    public void inserirPassageiro(MPassageiro passageiro){
-
-    }
-
-    public ArrayList<MPassageiro> selecionarPassageiros(MPassageiro passageiro){
-        ArrayList<MPassageiro> passageiros = new ArrayList<MPassageiro>();
-
-        return passageiros;
-    }
-    public ArrayList<MPassageiro> consultarPassageiro(){
-        ArrayList<MPassageiro> passageiros = new ArrayList<MPassageiro>();
-
-        String query = "SELECT * FROM TABELA_PASSAGEIROS";
-
-        Cursor c = db.query(DATABASE_TABLE, new String[] {KEY_CD_DESTINO, KEY_CD_PASSAGEIRO, KEY_CPF_PASSAGEIRO,
-                KEY_EMAIL_RESPONSAVEL, KEY_END_PASSAGEIRO, KEY_NOME_PASSAGEIRO, KEY_TEL_PASSAGEIRO, KEY_TEL_RESPONSAVEL},
-                null, null, null, null, null);
-
-        if (c.moveToFirst())
-        {
-            do {
-                MPassageiro passageiro = new MPassageiro();
-                passageiro.setCdDestino(c.getInt(c.getColumnIndex("cdDestino")));
-                passageiro.setCdPassageiro(c.getInt(c.getColumnIndex("cdPassageiro")));
-                passageiro.setCpfPassageiro(c.getString(c.getColumnIndex("cpfPassageiro")));
-                passageiro.setEmailResponsavel(c.getString(c.getColumnIndex("EmailResponsavel")));
-                passageiro.setEnderecoPassageiro(c.getString(c.getColumnIndex("enderecoPassageiro")));
-                passageiro.setNomePassageiro(c.getString(c.getColumnIndex("nomePassageiro")));
-                passageiro.setTelefonePassageiro(c.getString(c.getColumnIndex("telefonePassageiro")));
-                passageiro.setTelefoneResponsavel(c.getString(c.getColumnIndex("telefoneResponsavel")));
-                passageiros.add(passageiro);
-            } while (c.moveToNext());
+    public String nomeTabela() {
+        String nome = "";
+        ConnectionFactory conexao = new ConnectionFactory();
+        ObjetoConexao objConexao = new ObjetoConexao();
+        Connection conn = conexao.dbConnect(objConexao);
+        if (conn != null) {
+            try {
+                Statement statement = conn.createStatement();
+                String queryString = "select nome from TB_PASSAGEIRO where id = 1";
+                ResultSet rs;
+                rs = statement.executeQuery(queryString);
+                if (rs.next()) {
+                    nome = rs.getString("nome");
+                }
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
-        db.close();
-        return passageiros;
+        return nome;
     }
-
-    public void alterarPassageiro(MPassageiro passageiro){
-
-    }
-
-    public void excluirPassageiro(MPassageiro passageiro){
-
-    }
-
 
 }
