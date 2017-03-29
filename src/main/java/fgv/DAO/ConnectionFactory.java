@@ -19,11 +19,11 @@ public class ConnectionFactory {
         String connectionUrl = null;
         try {
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            connectionUrl = "jdbc:jtds:sqlserver://" +
-                    objConexao.getDb_connect_string() + ";" +
-                    "databaseName=" + objConexao.getDb_name()+ ";user="
+            connectionUrl = "jdbc:sqlserver://" +
+                    objConexao.getDb_connect_string() + ":1433;" +
+                    "database=" + objConexao.getDb_name()+ ";user="
                     +objConexao.getDb_userid() +
-                    ";password=" +  objConexao.getDb_password()+ ";";
+                    "@servertcc;password=" +  objConexao.getDb_password()+ ";encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
             conn = DriverManager.getConnection(connectionUrl);
         } catch (Exception ex) {
             ex.printStackTrace();

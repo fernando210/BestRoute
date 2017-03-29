@@ -26,8 +26,8 @@ public class CPassageiro {
         return passageiros;
     }
 
-    /*public MPassageiro consultarPassageiro(String nome){
-       // return passageiro.consultarPassageiro(nome);
+    public MPassageiro consultarPassageiro(String nome){
+        return passageiro.consultarPassageiro(nome);
     }
 
     /*public boolean atualizarPassageiro(MPassageiro p){

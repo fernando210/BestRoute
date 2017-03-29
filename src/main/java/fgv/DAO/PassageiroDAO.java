@@ -56,7 +56,7 @@ public class PassageiroDAO {
             return false;
     }
 
-    public MPassageiro consultarPassageiro(int id){
+    public MPassageiro consultarPassageiro(String nome){
 
         MPassageiro passageiro = new MPassageiro();
 
@@ -66,7 +66,7 @@ public class PassageiroDAO {
         if (conn != null) {
             try {
                 Statement statement = conn.createStatement();
-                String queryString = "select nome from TB_PASSAGEIRO where id = 1";
+                String queryString = "select nome from TB_PASSAGEIRO where upper(nome) like '%" +  nome + "%'";
                 ResultSet rs;
                 rs = statement.executeQuery(queryString);
                 if (rs.next()) {

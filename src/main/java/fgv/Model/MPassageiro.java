@@ -177,9 +177,9 @@ public class MPassageiro {
 
     }
 
-    public MPassageiro consultarPassageiro(int id){
+    public MPassageiro consultarPassageiro(String nome){
         setPassageiroDao();
-        return passageiroDao.consultarPassageiro(id);
+        return passageiroDao.consultarPassageiro(nome);
     }
 
 }
