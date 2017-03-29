@@ -27,6 +27,7 @@ public class MPassageiro {
     private int idDestino;
     private String nomeResponsavel;
     private String telefoneResponsavel;
+    private int ativo;
 
     public int getAtivo() {
         return ativo;
@@ -35,8 +36,6 @@ public class MPassageiro {
     public void setAtivo(int ativo) {
         this.ativo = ativo;
     }
-
-    private int ativo;
 
     private PassageiroDAO passageiroDao;
 
