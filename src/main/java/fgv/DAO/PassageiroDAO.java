@@ -94,7 +94,7 @@ public class PassageiroDAO {
         return passageiro;
     }
 
-    public boolean alterarPassageiro(MPassageiro passageiro){
+    public boolean atualizarPassageiro(MPassageiro passageiro){
 
         ConnectionFactory conexao = new ConnectionFactory();
         ObjetoConexao objConexao = new ObjetoConexao();

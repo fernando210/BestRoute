@@ -1,9 +1,11 @@
 package fgv.View;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -11,81 +13,55 @@ import fgv.Controller.CPassageiro;
 import fgv.Controller.R;
 import fgv.Model.MPassageiro;
 
-
 /**
- * Created by Fernando on 16/01/2017.
+ * Created by Vinicius on 28/03/2017.
  */
-public class VPassageiro extends Activity{
 
-    private EditText id;
+public class VPassageiro  extends Activity {
+
+    private static final int READ_BLOCK_SIZE = 100;
+
     private EditText nome;
     private EditText cpf;
-    private EditText telefone;
-    private EditText logradouro;
-    private EditText cidade;
-    private EditText estado;
-    private EditText bairro;
-    private Spinner destino;
-    private EditText nomeResponsavel;
-    private EditText telefoneResponsavel;
 
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cadastrar_passageiro);
+        setContentView(R.layout.passageiro);
 
-        Button btCadastrar = (Button) findViewById(R.id.btCadastrar);
 
-        btCadastrar.setOnClickListener(new View.OnClickListener(){
+        nome = (EditText) findViewById(R.id.edNome);
+        cpf = (EditText) findViewById(R.id.edCpf);
+
+
+        Button btConsultarPassageiro = (Button) findViewById(R.id.btConsultarPassageiro);
+
+        btConsultarPassageiro.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v){
 
-                nome = (EditText) findViewById(R.id.edNome);
-                cpf = (EditText) findViewById(R.id.edCpf);
-                telefone = (EditText) findViewById(R.id.edTelefone);
-                //destino (Spinner) findViewById(R.id.cbDestino);
-                logradouro = (EditText) findViewById(R.id.edLogradouro);
-                cidade = (EditText) findViewById(R.id.edCidade);
-                estado = (EditText) findViewById(R.id.edEstado);
-                bairro = (EditText) findViewById(R.id.edBairro);
-                nomeResponsavel = (EditText) findViewById(R.id.edNomeResponsavel);
-                telefoneResponsavel = (EditText) findViewById(R.id.edTelefoneResponsavel);
+                CPassageiro p = new CPassageiro();
+                // p.consultarPassageiro(nome);
 
-                MPassageiro passageiro = new MPassageiro();
-
-//                String TIRAESSAPORRADEPOIS = "1";
-//                passageiro.setAtivo(Integer.parseInt(TIRAESSAPORRADEPOIS));
-
-
-                passageiro.setNome(nome.getText().toString());
-                passageiro.setCpf(cpf.getText().toString());
-                passageiro.setTelefone(telefone.getText().toString());
-                passageiro.setLogradouro(logradouro.getText().toString());
-                passageiro.setCidade(cidade.getText().toString());
-                passageiro.setEstado(estado.getText().toString());
-                passageiro.setBairro(bairro.getText().toString());
-                //passageiro.setDestino();
-                passageiro.setNomeResponsavel(nomeResponsavel.getText().toString());
-                passageiro.setTelefoneResponsavel(telefoneResponsavel.getText().toString());
-
-                passageiro.inserirPassageiro(passageiro);
+                Intent iConsultaPassageiro = new Intent(VPassageiro.this, VAtualizarPassageiro.class);
+                startActivity(iConsultaPassageiro);
             }
         });
 
 
-        btCadastrar.setOnClickListener(new View.OnClickListener(){
+
+        Button btCadastrarPassageiro = (Button) findViewById(R.id.btCadastrarPassageiro);
+
+        btCadastrarPassageiro.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v){
 
-
-                id = (EditText) findViewById(R.id.edId);
-
-                CPassageiro cp = new CPassageiro();
-                cp.consultarPassageiro(Integer.parseInt(id.getText().toString()));
+                Intent iCadastrarPassageiro = new Intent(VPassageiro.this, VCadastrarPassageiro.class);
+                startActivity(iCadastrarPassageiro);
             }
         });
-
-        //startActivity(new Intent(this, Janela1.class));
-
     }
 
 }

@@ -169,8 +169,8 @@ public class MPassageiro {
         return passageiros;
     }
 
-    public void alterarPassageiro(){
-
+    public boolean atualizarPassageiro(MPassageiro mp){
+        return pd.atualizarPassageiro(mp);
     }
 
     public void excluirPassageiro(){

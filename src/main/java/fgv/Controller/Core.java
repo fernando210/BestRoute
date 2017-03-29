@@ -12,8 +12,8 @@ public class Core extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_core);
         CPassageiro pas = new CPassageiro();
-        MPassageiro mPas =  pas.consultarPassageiro(1);
-        String teste = mPas.getId() + " - " + mPas.getId();
+        //MPassageiro mPas =  pas.consultarPassageiro(1);
+        //String teste = mPas.getId() + " - " + mPas.getId();
 
     }
 }

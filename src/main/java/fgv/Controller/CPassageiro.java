@@ -26,14 +26,13 @@ public class CPassageiro {
         return passageiros;
     }
 
-    public MPassageiro consultarPassageiro(int id){
-        setMPassageiro();
-        return passageiro.consultarPassageiro(id);
+    /*public MPassageiro consultarPassageiro(String nome){
+       // return passageiro.consultarPassageiro(nome);
     }
 
-    public void alterarPassageiro(){
-
-    }
+    /*public boolean atualizarPassageiro(MPassageiro p){
+        return passageiro.atualizarPassageiro(p);
+    }*/
 
     public void excluirPassageiro(){
 
