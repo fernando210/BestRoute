@@ -52,8 +52,7 @@ public class VCadastrarPassageiro extends Activity{
 
                 MPassageiro passageiro = new MPassageiro();
 
-//                String TIRAESSAPORRADEPOIS = "1";
-//                passageiro.setAtivo(Integer.parseInt(TIRAESSAPORRADEPOIS));
+//
 
 
                 passageiro.setNome(nome.getText().toString());

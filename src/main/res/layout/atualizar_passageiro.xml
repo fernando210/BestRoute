@@ -22,6 +22,7 @@
             android:id="@+id/edId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:editable="false"
             android:ems="10"
             android:inputType="textPersonName" />
 
@@ -122,10 +123,12 @@
             android:layout_height="wrap_content"
             android:text="Nome do Destino" />
 
-        <Spinner
-            android:id="@+id/spinner"
+        <EditText
+            android:id="@+id/edDestino"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
 
         <TextView
             android:id="@+id/textView10"

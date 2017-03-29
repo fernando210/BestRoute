@@ -21,8 +21,8 @@ public class VPassageiro  extends Activity {
 
     private static final int READ_BLOCK_SIZE = 100;
 
-    private EditText nome;
-    private EditText cpf;
+    private String nome;
+    private String cpf;
 
 
 
@@ -32,8 +32,8 @@ public class VPassageiro  extends Activity {
         setContentView(R.layout.passageiro);
 
 
-        nome = (EditText) findViewById(R.id.edNome);
-        cpf = (EditText) findViewById(R.id.edCpf);
+        nome = findViewById(R.id.edNome).toString();
+        cpf = findViewById(R.id.edCpf).toString();
 
 
         Button btConsultarPassageiro = (Button) findViewById(R.id.btConsultarPassageiro);
@@ -43,7 +43,7 @@ public class VPassageiro  extends Activity {
             public void onClick(View v){
 
                 CPassageiro p = new CPassageiro();
-                // p.consultarPassageiro(nome);
+                 p.consultarPassageiro(nome);
 
                 Intent iConsultaPassageiro = new Intent(VPassageiro.this, VAtualizarPassageiro.class);
                 startActivity(iConsultaPassageiro);
