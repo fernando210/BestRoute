@@ -67,13 +67,20 @@ public class VCadastrarPassageiro extends Activity{
                 passageiro.setTelefoneResponsavel(telefoneResponsavel.getText().toString());
 
                 if(passageiro.inserirPassageiro(passageiro)){
-                    //colocar msg pra passou
+                    displayToast("Passageiro inserido com sucesso!");
                 }
                 else{
-                    //colocar msg que nao passou
+                    displayToast("erro ao inserir passageiro.");
                 }
             }
+
+            private void displayToast(String msg)
+            {
+                Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+            }
         });
+
+
 
     }
 
