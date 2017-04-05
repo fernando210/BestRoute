@@ -18,13 +18,23 @@ public class ConnectionFactory {
         Connection conn = null;
         String connectionUrl = null;
         try {
-            Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            connectionUrl = "jdbc:jtds:sqlserver://" +
-                    objConexao.getDb_connect_string() +
-                    "database=" + objConexao.getDb_name()+ ";user="
-                    +objConexao.getDb_userid() +
-                    "@servertcc;password=" +  objConexao.getDb_password()+ ";encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=60;";
-            conn = DriverManager.getConnection(connectionUrl);
+            Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
+//            connectionUrl = "jdbc:jtds:sqlserver://" +
+//                    objConexao.getDb_connect_string() +
+//                    "database=" + objConexao.getDb_name()+ "user="
+//                    +objConexao.getDb_userid() +
+//                    "@servertcc;password=" +  objConexao.getDb_password()+ ";encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=120";
+
+//            connectionUrl = "jdbc:jtds:sqlserver://" +
+//                    objConexao.getDb_connect_string() +
+//                    "database=" + objConexao.getDb_name()+ ";user="
+//                    +objConexao.getDb_userid() +
+//                    ";password=" +  objConexao.getDb_password();
+//
+//                    conn = DriverManager.getConnection(connectionUrl);
+
+            conn = DriverManager.getConnection("jdbc:jtds:sqlserver://127.0.0.1:1433/BestRoute;user=sa;password=mancha07");
+            //"jdbc:jtds:sqlserver://127.0.0.1:1433;instanceName=SQLEXPRESS;databaseName=BestRoute;user=sa;password=mancha07"
         } catch (Exception ex) {
             ex.printStackTrace();
         }
