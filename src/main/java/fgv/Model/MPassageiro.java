@@ -12,21 +12,33 @@ import fgv.DAO.PassageiroDAO;
 
 public class MPassageiro {
 
-    PassageiroDAO pd = new PassageiroDAO();
-
+    @com.google.gson.annotations.SerializedName("id")
     private int id;
+    @com.google.gson.annotations.SerializedName("cpf")
     private String cpf;
+    @com.google.gson.annotations.SerializedName("nome")
     private String nome;
+    @com.google.gson.annotations.SerializedName("telefone")
     private String telefone;
+    @com.google.gson.annotations.SerializedName("logradouro")
     private String logradouro;
+    @com.google.gson.annotations.SerializedName("cidade")
     private String cidade;
+    @com.google.gson.annotations.SerializedName("estado")
     private String estado;
+    @com.google.gson.annotations.SerializedName("bairro")
     private String bairro;
+    @com.google.gson.annotations.SerializedName("latitude")
     private String latitude;
+    @com.google.gson.annotations.SerializedName("longitude")
     private String longitude;
+    @com.google.gson.annotations.SerializedName("idDestino")
     private int idDestino;
+    @com.google.gson.annotations.SerializedName("nomeResponsavel")
     private String nomeResponsavel;
+    @com.google.gson.annotations.SerializedName("telefoneResponsavel")
     private String telefoneResponsavel;
+    @com.google.gson.annotations.SerializedName("ativo")
     private int ativo;
 
     public int getAtivo() {
@@ -152,14 +164,13 @@ public class MPassageiro {
     }
 
     private void setPassageiroDao(){
-
-        Context c = null;
         if(passageiroDao == null)
             passageiroDao = new PassageiroDAO();
     }
 
     public boolean inserirPassageiro(MPassageiro mp){
-        return pd.inserirPassageiro(mp);
+        setPassageiroDao();
+        return passageiroDao.inserirPassageiro(mp);
     }
 
     public ArrayList<MPassageiro> selecionarPassageiros(){
@@ -169,7 +180,8 @@ public class MPassageiro {
     }
 
     public boolean atualizarPassageiro(MPassageiro mp){
-        return pd.atualizarPassageiro(mp);
+        setPassageiroDao();
+        return passageiroDao.atualizarPassageiro(mp);
     }
 
     public void excluirPassageiro(){
