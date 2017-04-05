@@ -22,7 +22,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="numberDecimal"
+            android:maxLength="11"
+            android:numeric="integer" />
 
         <TextView
             android:id="@+id/textView7"
@@ -35,7 +37,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="100" />
 
         <TextView
             android:id="@+id/textView6"
@@ -48,7 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="phone"
+            android:maxLength="14" />
 
         <TextView
             android:id="@+id/textView5"
@@ -61,7 +65,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="80" />
 
         <TextView
             android:id="@+id/textView4"
@@ -74,7 +79,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="50" />
 
         <TextView
             android:id="@+id/textView3"
@@ -87,7 +93,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="30" />
 
         <TextView
             android:id="@+id/textView12"
@@ -100,7 +107,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="50" />
 
         <TextView
             android:id="@+id/textView11"
@@ -126,7 +134,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="100" />
 
         <TextView
             android:id="@+id/textView9"
@@ -139,7 +148,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="phone"
+            android:maxLength="14" />
 
         <Button
             android:id="@+id/btCadastrar"
