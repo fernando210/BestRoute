@@ -12,10 +12,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.net.MalformedURLException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import fgv.Controller.CPassageiro;
 import fgv.Controller.R;
@@ -78,20 +81,32 @@ public class VCadastrarPassageiro extends Activity{
 
                 try {
                     mClient = new MobileServiceClient("http://bestrouteapp.azurewebsites.net",VCadastrarPassageiro.this);
+                    mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
+                        @Override
+                        public OkHttpClient createOkHttpClient() {
+                            OkHttpClient client = new OkHttpClient();
+                            client.setReadTimeout(20, TimeUnit.SECONDS);
+                            client.setWriteTimeout(20, TimeUnit.SECONDS);
+                            return client;
+                        }
+                    });
+
+
                     mToDoTable = mClient.getTable("TB_Passageiro", MPassageiro.class);
                     //mAdapter = new PassageiroAdapter(this, R.layout.atualizar_passageiro);
-                    MPassageiro entity = mToDoTable.insert(passageiro).get();
+                    addItem(passageiro);
+                    //MPassageiro entity = mToDoTable.insert(passageiro).get();
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                if(passageiro.inserirPassageiro(passageiro)){
-                    displayToast("Passageiro inserido com sucesso!");
-                }
-                else{
-                    displayToast("erro ao inserir passageiro.");
-                }
+//                if(passageiro.inserirPassageiro(passageiro)){
+//                    displayToast("Passageiro inserido com sucesso!");
+//                }
+//                else{
+//                    displayToast("erro ao inserir passageiro.");
+//                }
             }
 
             private void displayToast(String msg)
