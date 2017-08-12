@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
@@ -41,6 +43,9 @@ public class VCadastrarPassageiro extends Activity{
     private EditText idDestino;
     private EditText nomeResponsavel;
     private EditText telefoneResponsavel;
+
+    private RequestQueue rq;
+
     private MobileServiceTable<MPassageiro> mToDoTable = null;
     PassageiroAdapter mAdapter;
     MobileServiceClient mClient = null;
@@ -68,6 +73,7 @@ public class VCadastrarPassageiro extends Activity{
 
                 MPassageiro passageiro = new MPassageiro();
 
+                //passageiro.setAtivo(1);
                 passageiro.setNome(nome.getText().toString());
                 passageiro.setCpf(cpf.getText().toString());
                 passageiro.setTelefone(telefone.getText().toString());
@@ -80,22 +86,30 @@ public class VCadastrarPassageiro extends Activity{
                 passageiro.setTelefoneResponsavel(telefoneResponsavel.getText().toString());
 
                 try {
-                    mClient = new MobileServiceClient("http://bestrouteapp.azurewebsites.net",VCadastrarPassageiro.this);
-                    mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
-                        @Override
-                        public OkHttpClient createOkHttpClient() {
-                            OkHttpClient client = new OkHttpClient();
-                            client.setReadTimeout(20, TimeUnit.SECONDS);
-                            client.setWriteTimeout(20, TimeUnit.SECONDS);
-                            return client;
-                        }
-                    });
+                    CPassageiro cp = new CPassageiro();
+                    rq = Volley.newRequestQueue(getBaseContext());
+                    cp.inserirPassageiroVolley(rq, getBaseContext(),passageiro);
+
+                    //MODO ANTIGO!!!!!!!
 
 
-                    mToDoTable = mClient.getTable("TB_Passageiro", MPassageiro.class);
-                    //mAdapter = new PassageiroAdapter(this, R.layout.atualizar_passageiro);
-                    addItem(passageiro);
-                    //MPassageiro entity = mToDoTable.insert(passageiro).get();
+//                    mClient = new MobileServiceClient("https://bestrouteapp.azurewebsites.net",VCadastrarPassageiro.this);
+//                    //.withFilter(new ProgressFilter());
+//                    mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
+//                        @Override
+//                        public OkHttpClient createOkHttpClient() {
+//                            OkHttpClient client = new OkHttpClient();
+//                            client.setReadTimeout(20, TimeUnit.SECONDS);
+//                            client.setWriteTimeout(20, TimeUnit.SECONDS);
+//                            return client;
+//                        }
+//                    });
+//
+//
+//                    mToDoTable = mClient.getTable("TB_PASSAGEIRO", MPassageiro.class);
+//                    //mAdapter = new PassageiroAdapter(this, R.layout.atualizar_passageiro);
+//                    addItem(passageiro);
+//                    //MPassageiro entity = mToDoTable.insert(passageiro).get();
 
                 } catch (Exception e) {
                     e.printStackTrace();

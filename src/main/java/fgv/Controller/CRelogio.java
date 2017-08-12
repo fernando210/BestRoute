@@ -58,8 +58,6 @@ public class CRelogio {
                 if(c == 20){
                     //TODO: Implementar para chamar mensagerias.
                     identificarLocalizacao();
-
-
                     c = 0;
                 }
 

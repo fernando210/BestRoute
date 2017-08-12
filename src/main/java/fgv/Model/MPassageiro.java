@@ -1,9 +1,19 @@
 package fgv.Model;
 
 import android.content.Context;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Map;
 
+import fgv.DAO.CustomJsonObjectRequest;
 import fgv.DAO.PassageiroDAO;
 
 /**
@@ -48,8 +58,6 @@ public class MPassageiro {
     public void setAtivo(int ativo) {
         this.ativo = ativo;
     }
-
-    private PassageiroDAO passageiroDao;
 
     public int getId() {
         return id;
@@ -155,22 +163,37 @@ public class MPassageiro {
         this.telefoneResponsavel = telefoneResponsavel;
     }
 
-    public PassageiroDAO getPassageiroDao() {
-        return passageiroDao;
+    public boolean inserirPassageiroVolley(RequestQueue rq, final Context contexto, Map<String,String> params, String url){
+
+        CustomJsonObjectRequest cjor = new CustomJsonObjectRequest(Request.Method.POST,
+            url,
+            params,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Toast.makeText(contexto,"aee" + response.toString(),Toast.LENGTH_LONG);
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    Toast.makeText(contexto, "Error:" + error.getMessage(), Toast.LENGTH_LONG).show();
+
+                }
+
+        });
+
+        cjor.setTag("tagInserir");
+        rq.add(cjor);
+        return false;
     }
 
-    public void setPassageiroDao(PassageiroDAO passageiroDao) {
-        this.passageiroDao = passageiroDao;
-    }
-
-    private void setPassageiroDao(){
-        if(passageiroDao == null)
-            passageiroDao = new PassageiroDAO();
-    }
 
     public boolean inserirPassageiro(MPassageiro mp){
-        setPassageiroDao();
-        return passageiroDao.inserirPassageiro(mp);
+        //setPassageiroDao();
+        //return passageiroDao.inserirPassageiro(mp);
+        return false;
     }
 
     public ArrayList<MPassageiro> selecionarPassageiros(){
@@ -180,8 +203,9 @@ public class MPassageiro {
     }
 
     public boolean atualizarPassageiro(MPassageiro mp){
-        setPassageiroDao();
-        return passageiroDao.atualizarPassageiro(mp);
+     //   setPassageiroDao();
+        //return passageiroDao.atualizarPassageiro(mp);
+        return false;
     }
 
     public void excluirPassageiro(){
@@ -189,8 +213,9 @@ public class MPassageiro {
     }
 
     public MPassageiro consultarPassageiro(String nome){
-        setPassageiroDao();
-        return passageiroDao.consultarPassageiro(nome);
+        //setPassageiroDao();
+        return new MPassageiro();
+        //return passageiroDao.consultarPassageiro(nome);
     }
 
 }
