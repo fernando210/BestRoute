@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sv01"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent">
@@ -24,7 +25,10 @@
             android:layout_height="wrap_content"
             android:editable="false"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:enabled="false"
+            android:inputType="textPersonName"
+            android:maxLength="11"
+            android:numeric="integer" />
 
         <TextView
             android:id="@+id/textView2"
@@ -36,8 +40,11 @@
             android:id="@+id/edCpf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:editable="false"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:enabled="false"
+            android:inputType="textPersonName"
+            android:maxLength="11" />
 
         <TextView
             android:id="@+id/textView7"
@@ -50,7 +57,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="100" />
 
         <TextView
             android:id="@+id/textView6"
@@ -63,7 +71,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="phone"
+            android:maxLength="14" />
 
         <TextView
             android:id="@+id/textView5"
@@ -76,7 +85,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="80" />
 
         <TextView
             android:id="@+id/textView4"
@@ -89,7 +99,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="50" />
 
         <TextView
             android:id="@+id/textView3"
@@ -102,7 +113,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="30" />
 
         <TextView
             android:id="@+id/textView12"
@@ -115,7 +127,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="50" />
 
         <TextView
             android:id="@+id/textView11"
@@ -128,7 +141,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="50" />
 
         <TextView
             android:id="@+id/textView10"
@@ -141,7 +155,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="100" />
 
         <TextView
             android:id="@+id/textView9"
@@ -154,7 +169,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="phone"
+            android:maxLength="14" />
 
         <CheckBox
             android:id="@+id/chAtivo"
