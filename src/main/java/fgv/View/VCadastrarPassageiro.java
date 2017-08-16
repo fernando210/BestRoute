@@ -1,10 +1,17 @@
 package fgv.View;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,10 +20,18 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
-import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.squareup.okhttp.OkHttpClient;
+
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
 import java.net.MalformedURLException;
 import java.util.concurrent.ExecutionException;
@@ -27,11 +42,13 @@ import fgv.Controller.R;
 import fgv.DAO.PassageiroAdapter;
 import fgv.Model.MPassageiro;
 
+import static android.content.ContentValues.TAG;
+
 
 /**
  * Created by Fernando on 16/01/2017.
  */
-public class VCadastrarPassageiro extends Activity{
+public class VCadastrarPassageiro extends Activity implements PlaceSelectionListener{
 
     private EditText nome;
     private EditText cpf;
@@ -46,19 +63,29 @@ public class VCadastrarPassageiro extends Activity{
 
     private RequestQueue rq;
 
-    private MobileServiceTable<MPassageiro> mToDoTable = null;
-    PassageiroAdapter mAdapter;
-    MobileServiceClient mClient = null;
+    @Override
+    public void onPlaceSelected(Place place) {
+        Log.i(TAG, "Place: " + place.getName());
+    }
+
+    @Override
+    public void onError(Status status) {
+        Log.i(TAG, "Ocorreu um erro: " + status);
+    }
 
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cadastrar_passageiro);
-
         Button btCadastrar = (Button) findViewById(R.id.btCadastrar);
 
-        btCadastrar.setOnClickListener(new View.OnClickListener(){
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
-            public void onClick(View v){
+        autocompleteFragment.setOnPlaceSelectedListener(this);
+
+        btCadastrar.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
 
                 nome = (EditText) findViewById(R.id.edNome);
                 cpf = (EditText) findViewById(R.id.edCpf);
@@ -90,27 +117,6 @@ public class VCadastrarPassageiro extends Activity{
                     rq = Volley.newRequestQueue(getBaseContext());
                     cp.inserirPassageiroVolley(rq, getBaseContext(),passageiro);
 
-                    //MODO ANTIGO!!!!!!!
-
-
-//                    mClient = new MobileServiceClient("https://bestrouteapp.azurewebsites.net",VCadastrarPassageiro.this);
-//                    //.withFilter(new ProgressFilter());
-//                    mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
-//                        @Override
-//                        public OkHttpClient createOkHttpClient() {
-//                            OkHttpClient client = new OkHttpClient();
-//                            client.setReadTimeout(20, TimeUnit.SECONDS);
-//                            client.setWriteTimeout(20, TimeUnit.SECONDS);
-//                            return client;
-//                        }
-//                    });
-//
-//
-//                    mToDoTable = mClient.getTable("TB_PASSAGEIRO", MPassageiro.class);
-//                    //mAdapter = new PassageiroAdapter(this, R.layout.atualizar_passageiro);
-//                    addItem(passageiro);
-//                    //MPassageiro entity = mToDoTable.insert(passageiro).get();
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -130,50 +136,7 @@ public class VCadastrarPassageiro extends Activity{
         });
     }
 
-    public void addItem(MPassageiro passageiro) {
-        if (mClient == null) {
-            return;
-        }
-        // Create a new item
-        final MPassageiro item = passageiro;
 
-        // Insert the new item
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    final MPassageiro entity = addItemInTable(item);
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.add(entity);
-                        }
-                    });
-                } catch (final Exception e) {
-                    createAndShowDialogFromTask(e, "Error");
-                }
-                return null;
-            }
-        };
-        runAsyncTask(task);
-    }
-    /**
-     * Add an item to the Mobile Service Table
-     *
-     * @param item
-     *            The item to Add
-     */
-    public MPassageiro addItemInTable(MPassageiro item) throws ExecutionException, InterruptedException {
-        MPassageiro entity = mToDoTable.insert(item).get();
-        return entity;
-    }
-
-    /**
-     * Run an ASync task on the corresponding executor
-     * @param task
-     * @return
-     */
     private AsyncTask<Void, Void, Void> runAsyncTask(AsyncTask<Void, Void, Void> task) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             return task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -222,5 +185,4 @@ public class VCadastrarPassageiro extends Activity{
         builder.setTitle(title);
         builder.create().show();
     }
-
 }

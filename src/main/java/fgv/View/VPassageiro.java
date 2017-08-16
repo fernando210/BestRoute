@@ -15,9 +15,6 @@ import fgv.Controller.R;
 import fgv.DAO.PassageiroAdapter;
 import fgv.Model.MPassageiro;
 
-import com.microsoft.windowsazure.mobileservices.*;
-import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-
 import java.net.MalformedURLException;
 import java.util.List;
 
@@ -31,9 +28,6 @@ public class VPassageiro  extends Activity {
 
     private String nome;
     private EditText edNome;
-    private MobileServiceTable<MPassageiro> mToDoTable = null;
-    PassageiroAdapter mAdapter;
-    MobileServiceClient mClient = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,28 +67,4 @@ public class VPassageiro  extends Activity {
         });
     }
 
-    public void showAll(View view) {
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    final List<MPassageiro> results = mToDoTable.execute().get();
-                    runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            mAdapter.clear();
-                            for (MPassageiro item : results) {
-                                mAdapter.add(item);
-                            }
-                        }
-                    });
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-                return null;
-            }
-        };
-        //runAsyncTask(task);
-    }
 }

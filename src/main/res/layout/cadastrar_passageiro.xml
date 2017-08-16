@@ -54,11 +54,18 @@
             android:inputType="phone"
             android:maxLength="14" />
 
-        <TextView
-            android:id="@+id/textView5"
+        <!--<TextView-->
+            <!--android:id="@+id/textView5"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Logradouro" />-->
+
+        <fragment
+            android:id="@+id/place_autocomplete_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Logradouro" />
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:text="Logradouro"/>
 
         <EditText
             android:id="@+id/edLogradouro"

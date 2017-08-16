@@ -1,5 +1,6 @@
 package fgv.DAO;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -32,6 +33,11 @@ public class CustomJsonObjectRequest extends Request<JSONObject> {
         super(Method.GET,url,listener);
         this.params = params;
         this.response = response;
+    }
+
+    @Override
+    public Map<String, String> getParams() throws AuthFailureError{
+        return params;
     }
 
     @Override

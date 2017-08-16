@@ -3,6 +3,7 @@ package fgv.Model;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,33 +23,33 @@ import fgv.DAO.PassageiroDAO;
 
 public class MPassageiro {
 
-    @com.google.gson.annotations.SerializedName("id")
+
     private int id;
-    @com.google.gson.annotations.SerializedName("cpf")
+
     private String cpf;
-    @com.google.gson.annotations.SerializedName("nome")
+
     private String nome;
-    @com.google.gson.annotations.SerializedName("telefone")
+
     private String telefone;
-    @com.google.gson.annotations.SerializedName("logradouro")
+
     private String logradouro;
-    @com.google.gson.annotations.SerializedName("cidade")
+
     private String cidade;
-    @com.google.gson.annotations.SerializedName("estado")
+
     private String estado;
-    @com.google.gson.annotations.SerializedName("bairro")
+
     private String bairro;
-    @com.google.gson.annotations.SerializedName("latitude")
+
     private String latitude;
-    @com.google.gson.annotations.SerializedName("longitude")
+
     private String longitude;
-    @com.google.gson.annotations.SerializedName("idDestino")
+
     private int idDestino;
-    @com.google.gson.annotations.SerializedName("nomeResponsavel")
+
     private String nomeResponsavel;
-    @com.google.gson.annotations.SerializedName("telefoneResponsavel")
+
     private String telefoneResponsavel;
-    @com.google.gson.annotations.SerializedName("ativo")
+
     private int ativo;
 
     public int getAtivo() {
@@ -163,7 +164,7 @@ public class MPassageiro {
         this.telefoneResponsavel = telefoneResponsavel;
     }
 
-    public boolean inserirPassageiroVolley(RequestQueue rq, final Context contexto, Map<String,String> params, String url){
+    public boolean inserirPassageiroVolley(RequestQueue rq, final Context contexto, Map<String,String> params, String url) {
 
         CustomJsonObjectRequest cjor = new CustomJsonObjectRequest(Request.Method.POST,
             url,
@@ -185,6 +186,7 @@ public class MPassageiro {
         });
 
         cjor.setTag("tagInserir");
+    
         rq.add(cjor);
         return false;
     }
