@@ -40,9 +40,9 @@ public class MPassageiro {
 
     private String bairro;
 
-    private String latitude;
+    private Double latitude;
 
-    private String longitude;
+    private Double longitude;
 
     private int idDestino;
 
@@ -124,19 +124,19 @@ public class MPassageiro {
         this.bairro = bairro;
     }
 
-    public String getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
@@ -178,7 +178,6 @@ public class MPassageiro {
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
                     Toast.makeText(contexto, "Error:" + error.getMessage(), Toast.LENGTH_LONG).show();
 
                 }
@@ -191,13 +190,30 @@ public class MPassageiro {
         return false;
     }
 
+    public ArrayList<MPassageiro> getAllPassageiros(RequestQueue rq, final Context contexto, Map<String,String> params, String url){
+        CustomJsonObjectRequest cjor = new CustomJsonObjectRequest(
+                url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(contexto, response.toString(),Toast.LENGTH_LONG);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(contexto, "Error:" + error.getMessage(), Toast.LENGTH_LONG).show();
 
-    public boolean inserirPassageiro(MPassageiro mp){
-        //setPassageiroDao();
-        //return passageiroDao.inserirPassageiro(mp);
-        return false;
+                    }
+
+                });
+
+        cjor.setTag("tagGetAllPassageiros");
+        rq.add(cjor);
+        return new ArrayList<MPassageiro>();
+
     }
-
     public ArrayList<MPassageiro> selecionarPassageiros(){
         ArrayList<MPassageiro> passageiros = new ArrayList<MPassageiro>();
 

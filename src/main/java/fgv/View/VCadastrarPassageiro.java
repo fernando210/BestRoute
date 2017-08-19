@@ -34,6 +34,7 @@ import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
 import java.net.MalformedURLException;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -53,7 +54,6 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
     private EditText nome;
     private EditText cpf;
     private EditText telefone;
-    private EditText logradouro;
     private EditText cidade;
     private EditText estado;
     private EditText bairro;
@@ -62,10 +62,15 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
     private EditText telefoneResponsavel;
 
     private RequestQueue rq;
+    private double currentLatitude;
+    private double currentLongitude;
+    private String logradouro;
 
     @Override
-    public void onPlaceSelected(Place place) {
-        Log.i(TAG, "Place: " + place.getName());
+    public void onPlaceSelected(Place place){
+        currentLatitude = place.getLatLng().latitude;
+        currentLongitude = place.getLatLng().longitude;
+        logradouro = place.getAddress().toString();
     }
 
     @Override
@@ -79,7 +84,7 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
         Button btCadastrar = (Button) findViewById(R.id.btCadastrar);
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+                getFragmentManager().findFragmentById(R.id.findRidePlaceAutocompleteFragment);
 
         autocompleteFragment.setOnPlaceSelectedListener(this);
 
@@ -91,7 +96,6 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
                 cpf = (EditText) findViewById(R.id.edCpf);
                 telefone = (EditText) findViewById(R.id.edTelefone);
                 idDestino = (EditText) findViewById(R.id.edDestino);
-                logradouro = (EditText) findViewById(R.id.edLogradouro);
                 cidade = (EditText) findViewById(R.id.edCidade);
                 estado = (EditText) findViewById(R.id.edEstado);
                 bairro = (EditText) findViewById(R.id.edBairro);
@@ -104,13 +108,16 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
                 passageiro.setNome(nome.getText().toString());
                 passageiro.setCpf(cpf.getText().toString());
                 passageiro.setTelefone(telefone.getText().toString());
-                passageiro.setLogradouro(logradouro.getText().toString());
+                passageiro.setLogradouro(logradouro);
                 passageiro.setCidade(cidade.getText().toString());
                 passageiro.setEstado(estado.getText().toString());
                 passageiro.setBairro(bairro.getText().toString());
                 passageiro.setIdDestino(1);
                 passageiro.setNomeResponsavel(nomeResponsavel.getText().toString());
                 passageiro.setTelefoneResponsavel(telefoneResponsavel.getText().toString());
+
+                passageiro.setLatitude(currentLatitude);
+                passageiro.setLongitude(currentLongitude);
 
                 try {
                     CPassageiro cp = new CPassageiro();

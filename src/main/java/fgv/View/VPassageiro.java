@@ -10,6 +10,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+
 import fgv.Controller.CPassageiro;
 import fgv.Controller.R;
 import fgv.DAO.PassageiroAdapter;
@@ -28,19 +33,24 @@ public class VPassageiro  extends Activity {
 
     private String nome;
     private EditText edNome;
+    private CPassageiro cPassageiro;
+    private RequestQueue rq;
+
+    public List<MPassageiro> lstPassageiros;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.passageiro);
-//        try {
-//            mClient = new MobileServiceClient("http://bestrouteapp.azurewebsites.net",this);
-//            mToDoTable = mClient.getTable("TB_Passageiro", MPassageiro.class);
-//            //mAdapter = new PassageiroAdapter(this, R.layout.atualizar_passageiro);
-//            List<MPassageiro> results = mToDoTable.execute().get();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
+        cPassageiro = new CPassageiro();
+        rq = Volley.newRequestQueue(getBaseContext());
+        try {
+            lstPassageiros = cPassageiro.getAllPassageiros(rq,getBaseContext());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         edNome = (EditText) findViewById(R.id.edNome);
         nome = edNome.getText().toString();
 

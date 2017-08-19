@@ -1,15 +1,21 @@
 package fgv.Controller;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.android.volley.RequestQueue;
 import com.google.android.gms.cast.Cast;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import fgv.DAO.PassageiroDAO;
@@ -27,14 +33,6 @@ public class CPassageiro {
     public CPassageiro(){
         passageiro = new MPassageiro();
         gApi = new GoogleAPI();
-    }
-
-    private void setMPassageiro(){
-        if(passageiro == null)
-            passageiro = new MPassageiro();
-    }
-    public boolean inserirPassageiro(MPassageiro p){
-        return passageiro.inserirPassageiro(p);
     }
 
     public boolean inserirPassageiroVolley(RequestQueue rq, Context contexto, MPassageiro p){
@@ -55,9 +53,8 @@ public class CPassageiro {
         params.put("nomeResponsavel", p.getNomeResponsavel());
         params.put("telefoneResponsavel", p.getTelefoneResponsavel());
 
-        LatLng latLng = gApi.identificarLocalizacao();
-        params.put("latitude", String.valueOf(latLng.latitude));
-        params.put("longitude", String.valueOf(latLng.longitude));
+        params.put("latitude", String.valueOf(p.getLatitude()));
+        params.put("longitude", String.valueOf(p.getLongitude()));
 
         JSONObject js = new JSONObject(params);
 
@@ -65,16 +62,28 @@ public class CPassageiro {
         params.put("json", js.toString());
 
         String url = "https://bestrouteapi.azurewebsites.net/Api/Mobile/InserirPassageiro";
-        //"http://localhost:4718/Api/Mobile/InserirPassageiro";
+
         return passageiro.inserirPassageiroVolley(rq, contexto, params, url);
     }
 
-    public ArrayList<MPassageiro> selecionarPassageiros(){
+    public ArrayList<MPassageiro> getAllPassageiros(RequestQueue rq, Context contexto) throws JSONException {
         ArrayList<MPassageiro> passageiros = new ArrayList<MPassageiro>();
+        JSONObject js = new JSONObject();
+        js.put("motoristaId",1);
 
-         return passageiros;
+        Map<String,String> params;
+        params = new HashMap<String,String>();
+
+        params.put("json", js.toString());
+
+        String url = "https://bestrouteapi.azurewebsites.net/Api/Mobile/GetAllPassageiros?motoristaId=1";
+        passageiro.getAllPassageiros(rq,contexto,params,url);
+        return passageiros;
     }
 
+    public ArrayList<MPassageiro> selecionarPassageiros(){
+        return new ArrayList<MPassageiro>();
+    }
     public MPassageiro consultarPassageiro(String nome){
         return passageiro.consultarPassageiro(nome);
     }
