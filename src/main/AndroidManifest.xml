@@ -20,12 +20,12 @@
         <activity android:name="fgv.View.VPassageiro" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity android:name="fgv.View.VCadastrarPassageiro" />
+        <activity android:name="fgv.View.VAtualizarPassageiro" />
 
         <meta-data
             android:name="com.google.android.maps.v4.API_KEY"

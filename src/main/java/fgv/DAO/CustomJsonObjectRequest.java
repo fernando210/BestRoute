@@ -7,11 +7,14 @@ import com.android.volley.Response;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
+import com.google.gson.JsonParser;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,12 +32,6 @@ public class CustomJsonObjectRequest extends Request<JSONObject> {
         this.response = response;
     }
 
-    public CustomJsonObjectRequest(String url, Map<String,String> params, Listener<JSONObject> response, Response.ErrorListener listener){
-        super(Method.GET,url,listener);
-        this.params = params;
-        this.response = response;
-    }
-
     @Override
     public Map<String, String> getParams() throws AuthFailureError{
         return params;
@@ -44,7 +41,7 @@ public class CustomJsonObjectRequest extends Request<JSONObject> {
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
         try {
             String js = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-            return(Response.success(new JSONObject(js),HttpHeaderParser.parseCacheHeaders(response)));
+            return Response.success( new JSONObject(js.toString()),HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (JSONException e) {

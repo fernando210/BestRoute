@@ -14,23 +14,6 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Id" />
-
-        <EditText
-            android:id="@+id/edId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:editable="false"
-            android:ems="10"
-            android:enabled="false"
-            android:inputType="textPersonName"
-            android:maxLength="11"
-            android:numeric="integer" />
-
-        <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,7 +23,6 @@
             android:id="@+id/edCpf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:editable="false"
             android:ems="10"
             android:enabled="false"
             android:inputType="textPersonName"
@@ -80,55 +62,19 @@
             android:layout_height="wrap_content"
             android:text="Logradouro" />
 
-        <EditText
-            android:id="@+id/edLogradouro"
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view"
+            android:layout_gravity="left"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:maxLength="80" />
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cidade" />
-
-        <EditText
-            android:id="@+id/edCidade"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:maxLength="50" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Estado" />
-
-        <EditText
-            android:id="@+id/editText13"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:maxLength="30" />
-
-        <TextView
-            android:id="@+id/textView12"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Bairro" />
-
-        <EditText
-            android:id="@+id/editText12"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:maxLength="50" />
+            <fragment
+                android:id="@+id/edLogradouro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"/>
+        </android.support.v7.widget.CardView>
 
         <TextView
             android:id="@+id/textView11"
@@ -151,7 +97,7 @@
             android:text="Nome do Responsável" />
 
         <EditText
-            android:id="@+id/editText11"
+            android:id="@+id/edNomeResponsavel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -165,7 +111,7 @@
             android:text="Telefone do Responsável" />
 
         <EditText
-            android:id="@+id/editText9"
+            android:id="@+id/edTelefoneResponsavel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"

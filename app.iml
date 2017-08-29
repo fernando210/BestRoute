@@ -140,6 +140,7 @@
     <orderEntry type="library" exported="" name="play-services-gcm-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-games-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-analytics-10.0.1" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.8.0" level="project" />
     <orderEntry type="library" exported="" name="firebase-auth-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-tasks-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-identity-10.0.1" level="project" />

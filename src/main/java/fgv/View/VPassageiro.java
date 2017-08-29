@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -12,6 +14,7 @@ import android.widget.Spinner;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 
@@ -21,6 +24,7 @@ import fgv.DAO.PassageiroAdapter;
 import fgv.Model.MPassageiro;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,13 +35,12 @@ public class VPassageiro  extends Activity {
 
     private static final int READ_BLOCK_SIZE = 100;
 
-    private String nome;
-    private EditText edNome;
+    private AutoCompleteTextView actvNome;
     private CPassageiro cPassageiro;
     private RequestQueue rq;
 
-    public List<MPassageiro> lstPassageiros;
-
+    public ArrayList<MPassageiro> lstPassageiros = new ArrayList<MPassageiro>();
+    public ArrayAdapter<String> passageirosAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,22 +49,27 @@ public class VPassageiro  extends Activity {
         cPassageiro = new CPassageiro();
         rq = Volley.newRequestQueue(getBaseContext());
         try {
-            lstPassageiros = cPassageiro.getAllPassageiros(rq,getBaseContext());
+            cPassageiro.getAllPassageiros(rq,getBaseContext(), this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        edNome = (EditText) findViewById(R.id.edNome);
-        nome = edNome.getText().toString();
+        passageirosAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line);
+        actvNome = (AutoCompleteTextView) findViewById(R.id.actvNome);
+        actvNome.setAdapter(passageirosAdapter);
 
         Button btConsultarPassageiro = (Button) findViewById(R.id.btConsultarPassageiro);
 
         btConsultarPassageiro.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v){
-                Intent iConsultaPassageiro = new Intent(VPassageiro.this, VAtualizarPassageiro.class);
-                iConsultaPassageiro.putExtra("nome", nome);
-                startActivity(iConsultaPassageiro);
+                Intent iAtualizarPassageiro = new Intent(VPassageiro.this, VAtualizarPassageiro.class);
+                iAtualizarPassageiro.putExtra("passageiro",
+                        (new Gson()).toJson(cPassageiro.getPassageiro(lstPassageiros,
+                                actvNome.getText().toString()))
+                );
+                startActivity(iAtualizarPassageiro);
             }
         });
 
@@ -70,7 +78,6 @@ public class VPassageiro  extends Activity {
         btCadastrarPassageiro.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v){
-
                 Intent iCadastrarPassageiro = new Intent(VPassageiro.this, VCadastrarPassageiro.class);
                 startActivity(iCadastrarPassageiro);
             }

@@ -54,9 +54,6 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
     private EditText nome;
     private EditText cpf;
     private EditText telefone;
-    private EditText cidade;
-    private EditText estado;
-    private EditText bairro;
     private EditText idDestino;
     private EditText nomeResponsavel;
     private EditText telefoneResponsavel;
@@ -96,9 +93,6 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
                 cpf = (EditText) findViewById(R.id.edCpf);
                 telefone = (EditText) findViewById(R.id.edTelefone);
                 idDestino = (EditText) findViewById(R.id.edDestino);
-                cidade = (EditText) findViewById(R.id.edCidade);
-                estado = (EditText) findViewById(R.id.edEstado);
-                bairro = (EditText) findViewById(R.id.edBairro);
                 nomeResponsavel = (EditText) findViewById(R.id.edNomeResponsavel);
                 telefoneResponsavel = (EditText) findViewById(R.id.edTelefoneResponsavel);
 
@@ -109,9 +103,6 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
                 passageiro.setCpf(cpf.getText().toString());
                 passageiro.setTelefone(telefone.getText().toString());
                 passageiro.setLogradouro(logradouro);
-                passageiro.setCidade(cidade.getText().toString());
-                passageiro.setEstado(estado.getText().toString());
-                passageiro.setBairro(bairro.getText().toString());
                 passageiro.setIdDestino(1);
                 passageiro.setNomeResponsavel(nomeResponsavel.getText().toString());
                 passageiro.setTelefoneResponsavel(telefoneResponsavel.getText().toString());
@@ -123,6 +114,7 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
                     CPassageiro cp = new CPassageiro();
                     rq = Volley.newRequestQueue(getBaseContext());
                     cp.inserirPassageiroVolley(rq, getBaseContext(),passageiro);
+                    //lstPassageiros.Add(passageiro);
 
                 } catch (Exception e) {
                     e.printStackTrace();

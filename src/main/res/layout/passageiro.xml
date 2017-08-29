@@ -7,25 +7,18 @@
         android:id="@+id/btCadastrarPassageiro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cadastrar Passageiro" />
+        android:text="Novo Passageiro" />
 
-    <TextView
-        android:id="@+id/textView13"
+    <AutoCompleteTextView
+        android:id="@+id/actvNome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="nome" />
-
-    <EditText
-        android:id="@+id/edNome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName" />
+        android:hint="Consulte um passageiro" />
 
     <Button
         android:id="@+id/btConsultarPassageiro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Consultar Passageiro" />
+        android:text="Editar Passageiro" />
 
 </LinearLayout>

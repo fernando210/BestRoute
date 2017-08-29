@@ -3,19 +3,22 @@ package fgv.Model;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
 
 import fgv.DAO.CustomJsonObjectRequest;
-import fgv.DAO.PassageiroDAO;
+import fgv.DAO.GsonRequest;
+import fgv.View.VAtualizarPassageiro;
+import fgv.View.VPassageiro;
 
 /**
  * Created by Fernando on 16/01/2017.
@@ -24,144 +27,144 @@ import fgv.DAO.PassageiroDAO;
 public class MPassageiro {
 
 
-    private int id;
+    private int Id;
 
-    private String cpf;
+    private String Cpf;
 
-    private String nome;
+    private String Nome;
 
-    private String telefone;
+    private String Telefone;
 
-    private String logradouro;
+    private String Logradouro;
 
-    private String cidade;
+    private String Cidade;
 
-    private String estado;
+    private String Estado;
 
-    private String bairro;
+    private String Bairro;
 
-    private Double latitude;
+    private Double Latitude;
 
-    private Double longitude;
+    private Double Longitude;
 
-    private int idDestino;
+    private int IdDestino;
 
-    private String nomeResponsavel;
+    private String NomeResponsavel;
 
-    private String telefoneResponsavel;
+    private String TelefoneResponsavel;
 
-    private int ativo;
+    private int Ativo;
 
     public int getAtivo() {
-        return ativo;
+        return Ativo;
     }
 
     public void setAtivo(int ativo) {
-        this.ativo = ativo;
+        this.Ativo = ativo;
     }
 
     public int getId() {
-        return id;
+        return Id;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.Id = id;
     }
 
     public String getCpf() {
-        return cpf;
+        return Cpf;
     }
 
     public void setCpf(String cpf) {
-        this.cpf = cpf;
+        this.Cpf = cpf;
     }
 
     public String getNome() {
-        return nome;
+        return Nome;
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        this.Nome = nome;
     }
 
     public String getTelefone() {
-        return telefone;
+        return Telefone;
     }
 
     public void setTelefone(String telefone) {
-        this.telefone = telefone;
+        this.Telefone = telefone;
     }
 
     public String getLogradouro() {
-        return logradouro;
+        return Logradouro;
     }
 
     public void setLogradouro(String logradouro) {
-        this.logradouro = logradouro;
+        this.Logradouro = logradouro;
     }
 
     public String getCidade() {
-        return cidade;
+        return Cidade;
     }
 
     public void setCidade(String cidade) {
-        this.cidade = cidade;
+        this.Cidade = cidade;
     }
 
     public String getEstado() {
-        return estado;
+        return Estado;
     }
 
     public void setEstado(String estado) {
-        this.estado = estado;
+        this.Estado = estado;
     }
 
     public String getBairro() {
-        return bairro;
+        return Bairro;
     }
 
     public void setBairro(String bairro) {
-        this.bairro = bairro;
+        this.Bairro = bairro;
     }
 
     public Double getLatitude() {
-        return latitude;
+        return Latitude;
     }
 
     public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+        this.Latitude = latitude;
     }
 
     public Double getLongitude() {
-        return longitude;
+        return Longitude;
     }
 
     public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+        this.Longitude = longitude;
     }
 
     public int getIdDestino() {
-        return idDestino;
+        return IdDestino;
     }
 
     public void setIdDestino(int idDestino) {
-        this.idDestino = idDestino;
+        this.IdDestino = idDestino;
     }
 
     public String getNomeResponsavel() {
-        return nomeResponsavel;
+        return NomeResponsavel;
     }
 
     public void setNomeResponsavel(String nomeResponsavel) {
-        this.nomeResponsavel = nomeResponsavel;
+        this.NomeResponsavel = nomeResponsavel;
     }
 
     public String getTelefoneResponsavel() {
-        return telefoneResponsavel;
+        return TelefoneResponsavel;
     }
 
     public void setTelefoneResponsavel(String telefoneResponsavel) {
-        this.telefoneResponsavel = telefoneResponsavel;
+        this.TelefoneResponsavel = telefoneResponsavel;
     }
 
     public boolean inserirPassageiroVolley(RequestQueue rq, final Context contexto, Map<String,String> params, String url) {
@@ -190,14 +193,15 @@ public class MPassageiro {
         return false;
     }
 
-    public ArrayList<MPassageiro> getAllPassageiros(RequestQueue rq, final Context contexto, Map<String,String> params, String url){
-        CustomJsonObjectRequest cjor = new CustomJsonObjectRequest(
+    public void atualizarPassageiro(RequestQueue rq, final Context contexto,Map<String,String> params, String url){
+
+        CustomJsonObjectRequest cjor = new CustomJsonObjectRequest(Request.Method.POST,
                 url,
-                null,
+                params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Toast.makeText(contexto, response.toString(),Toast.LENGTH_LONG);
+                        Toast.makeText(contexto,"aee" + response.toString(),Toast.LENGTH_LONG);
                     }
                 },
                 new Response.ErrorListener() {
@@ -209,21 +213,57 @@ public class MPassageiro {
 
                 });
 
-        cjor.setTag("tagGetAllPassageiros");
-        rq.add(cjor);
-        return new ArrayList<MPassageiro>();
+        cjor.setTag("tagInserir");
 
+        rq.add(cjor);
+
+
+        GsonRequest<MPassageiro> gReq = new GsonRequest<MPassageiro>(url, MPassageiro.class, null,
+                new Response.Listener<MPassageiro>() {
+                    @Override
+                    public void onResponse(MPassageiro response) {
+                        Toast.makeText(contexto, "passageiro atualizado com sucesso", Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(contexto, "Error:" + error.getMessage(), Toast.LENGTH_LONG).show();
+
+                    }
+                });
+        rq.add(gReq);
     }
+
+    public void getAllPassageiros(RequestQueue rq, final Context contexto, final VPassageiro vp,
+                                  Map<String,String> params, String url){
+
+        Type type = new TypeToken<ArrayList<MPassageiro>>() {}.getType();
+        GsonRequest<ArrayList<MPassageiro>> gReq = new GsonRequest<ArrayList<MPassageiro>>(url, type, null,
+                new Response.Listener<ArrayList<MPassageiro>>() {
+                    @Override
+                    public void onResponse(ArrayList<MPassageiro> response) {
+                        vp.lstPassageiros = response;
+                        for (int i = 0; i < response.size();i++){
+                            vp.passageirosAdapter.add(response.get(i).getNome() + " - " + response.get(i).getCpf());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(contexto, "Error:" + error.getMessage(), Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
+        rq.add(gReq);
+    }
+
     public ArrayList<MPassageiro> selecionarPassageiros(){
         ArrayList<MPassageiro> passageiros = new ArrayList<MPassageiro>();
 
         return passageiros;
-    }
-
-    public boolean atualizarPassageiro(MPassageiro mp){
-     //   setPassageiroDao();
-        //return passageiroDao.atualizarPassageiro(mp);
-        return false;
     }
 
     public void excluirPassageiro(){

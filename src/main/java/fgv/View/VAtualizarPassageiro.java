@@ -1,93 +1,134 @@
 package fgv.View;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+
 import fgv.Controller.CPassageiro;
 import fgv.Controller.R;
 import fgv.Model.MPassageiro;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by Vinicius on 28/03/2017.
  */
 
-public class VAtualizarPassageiro  extends Activity {
+public class VAtualizarPassageiro  extends Activity implements PlaceSelectionListener {
 
-    private String nome;
     private EditText edNome;
     private EditText edCpf;
     private EditText edTelefone;
-    private EditText edLogradouro;
-    private EditText edCidade;
-    private EditText edEstado;
-    private EditText edBairro;
+    private Fragment edLogradouro;
     private EditText edDestino;
     private EditText edNomeResponsavel;
     private EditText edTelefoneResponsavel;
-    private CheckBox edAtivo;
-    private int ativo;
+    private CheckBox chAtivo;
+
+    private MPassageiro passageiro;
+    private CPassageiro cp;
+    private RequestQueue rq;
+    private double currentLatitude;
+    private double currentLongitude;
+    private String logradouro;
+
+    @Override
+    public void onPlaceSelected(Place place) {
+        currentLatitude = place.getLatLng().latitude;
+        currentLongitude = place.getLatLng().longitude;
+        logradouro = place.getAddress().toString();
+    }
+
+    @Override
+    public void onError(Status status) {
+        Log.i(TAG, "Ocorreu um erro: " + status);
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.atualizar_passageiro);
 
-        Intent iConsultaPassageiro= getIntent();
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.edLogradouro);
+
+        autocompleteFragment.setOnPlaceSelectedListener(this);
+
+        cp = new CPassageiro();
+        Intent iConsultaPassageiro = getIntent();
         Bundle extras = iConsultaPassageiro.getExtras();
         if(extras != null) {
-            nome = extras.getString("nome");
+            passageiro =  (new Gson()).fromJson(extras.get("passageiro").toString(),MPassageiro.class);
         }
 
-        MPassageiro mp = new MPassageiro();
-        CPassageiro p = new CPassageiro();
-        mp = p.consultarPassageiro(nome);
-        edNome.setText(mp.getNome());
-        edCpf.setText(mp.getCpf());
-        edTelefone.setText(mp.getTelefone());
-        edDestino.setText(mp.getIdDestino());
-        edLogradouro.setText(mp.getLogradouro());
-        edCidade.setText(mp.getCidade());
-        edEstado.setText(mp.getEstado());
-        edBairro.setText(mp.getBairro());
-        edNomeResponsavel.setText(mp.getNomeResponsavel());
-        edTelefoneResponsavel.setText(mp.getTelefoneResponsavel());
-        if(mp.getAtivo() == 1)
-            edAtivo.setChecked(true);
-        else
-            edAtivo.setChecked(false);
+        edNome = (EditText) findViewById(R.id.edNome);
+        edCpf = (EditText) findViewById(R.id.edCpf);
+        edTelefone = (EditText) findViewById(R.id.edTelefone);
+        edDestino = (EditText) findViewById(R.id.edDestino);
 
+        edNomeResponsavel = (EditText) findViewById(R.id.edNomeResponsavel);
+        edTelefoneResponsavel = (EditText) findViewById(R.id.edTelefoneResponsavel);
+        chAtivo = (CheckBox) findViewById(R.id.chAtivo);
+
+        edNome.setText(passageiro.getNome());
+        edCpf.setText(passageiro.getCpf());
+        edTelefone.setText(passageiro.getTelefone());
+        //edDestino.setText(passageiro.getIdDestino());
+
+        PlaceAutocompleteFragment places= (PlaceAutocompleteFragment)getFragmentManager().findFragmentById(R.id.edLogradouro);
+        EditText etPlace = (EditText)places.getView().findViewById(R.id.place_autocomplete_search_input);
+        etPlace.setText(passageiro.getLogradouro());
+
+        edNomeResponsavel.setText(passageiro.getNomeResponsavel());
+        edTelefoneResponsavel.setText(passageiro.getTelefoneResponsavel());
+        if(passageiro.getAtivo() == 1)
+            chAtivo.setChecked(true);
+        else
+            chAtivo.setChecked(false);
 
         Button btAtualizar = (Button) findViewById(R.id.btAtualizar);
 
         btAtualizar.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v){
+                passageiro.setNome(edNome.getText().toString());
+                passageiro.setTelefone(edTelefone.getText().toString());
+                passageiro.setLogradouro(logradouro == null ? passageiro.getLogradouro() : logradouro);
+    //            passageiro.setIdDestino(Integer.parseInt(String.valueOf(edDestino.getText())));
+                passageiro.setNomeResponsavel(edNomeResponsavel.getText().toString());
+                passageiro.setTelefoneResponsavel(edTelefoneResponsavel.getText().toString());
+                passageiro.setAtivo(chAtivo.isChecked()? 1 : 0);
+                passageiro.setLatitude(currentLatitude);
+                passageiro.setLongitude(currentLongitude);
 
-
-            MPassageiro passageiro = new MPassageiro();
-
-
-            passageiro.setNome(edNome.getText().toString());
-            passageiro.setCpf(edCpf.getText().toString());
-            passageiro.setTelefone(edTelefone.getText().toString());
-            passageiro.setLogradouro(edLogradouro.getText().toString());
-            passageiro.setCidade(edCidade.getText().toString());
-            passageiro.setEstado(edEstado.getText().toString());
-            passageiro.setBairro(edBairro.getText().toString());
-            passageiro.setIdDestino(Integer.parseInt(String.valueOf(edDestino.getText())));
-            passageiro.setNomeResponsavel(edNomeResponsavel.getText().toString());
-            passageiro.setTelefoneResponsavel(edTelefoneResponsavel.getText().toString());
-
-            //passageiro.atualizarPassageiro(passageiro, cpf);
+                rq = Volley.newRequestQueue(getBaseContext());
+                try {
+                    cp.atualizarPassageiro(rq, getBaseContext(),passageiro);
+//                    for (int i = 0; i < lstPassageiros.sie(); i++){
+//                        if(lstPassageiros.getIndex(i).getId().equals(passageiro.getId())){
+//                            lstPassageiros.getIndex(i) = passageiro;
+//                        }
+//                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
-
     }
-
-
 
 }
