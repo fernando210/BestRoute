@@ -68,6 +68,7 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
     private double currentLatitude;
     private double currentLongitude;
     private String logradouro;
+    private static final int[] weightCpf = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
 
     private ArrayList<MPassageiro> lstPassageiros;
     private ArrayAdapter<String> lstPassageirosAdapter;
@@ -108,8 +109,8 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
                 MPassageiro passageiro = new MPassageiro();
 
                 boolean hasErro = false;
-                if(TextUtils.isEmpty(cpf.getText().toString()) || cpf.getText().toString().length() < 11){
-                    cpf.setError("Digite um cpf");
+                if(!isValidCpf(cpf.getText().toString())){
+                    cpf.setError("Digite um cpf válido");
                     hasErro = true;
                 }
                 if(TextUtils.isEmpty(nome.getText().toString())){
@@ -162,6 +163,23 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
         });
     }
 
+    public boolean isValidCpf(final String cpf) {
+        if ((cpf == null) || (cpf.length() != 11) || cpf.matches(cpf.charAt(0) + "{11}")) return false;
+
+        final Integer digit1 = calcular(cpf.substring(0, 9), weightCpf);
+        final Integer digit2 = calcular(cpf.substring(0, 9) + digit1, weightCpf);
+        return cpf.equals(cpf.substring(0, 9) + digit1.toString() + digit2.toString());
+    }
+
+    private static int calcular(final String str, final int[] weight) {
+        int sum = 0;
+        for (int i = str.length() - 1, digit; i >= 0; i--) {
+            digit = Integer.parseInt(str.substring(i, i + 1));
+            sum += digit * weight[weight.length - str.length() + i];
+        }
+        sum = 11 - sum % 11;
+        return sum > 9 ? 0 : sum;
+    }
 
     private AsyncTask<Void, Void, Void> runAsyncTask(AsyncTask<Void, Void, Void> task) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
