@@ -1,8 +1,12 @@
 package fgv.Model;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -13,6 +17,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import fgv.DAO.CustomJsonObjectRequest;
@@ -20,11 +25,13 @@ import fgv.DAO.GsonRequest;
 import fgv.View.VAtualizarPassageiro;
 import fgv.View.VPassageiro;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * Created by Fernando on 16/01/2017.
  */
 
-public class MPassageiro {
+public class MPassageiro{
 
 
     private int Id;
@@ -167,7 +174,7 @@ public class MPassageiro {
         this.TelefoneResponsavel = telefoneResponsavel;
     }
 
-    public boolean inserirPassageiroVolley(RequestQueue rq, final Context contexto, Map<String,String> params, String url) {
+    public boolean inserirPassageiroVolley(RequestQueue rq, final Context contexto, final Map<String,String> params, String url) {
 
         CustomJsonObjectRequest cjor = new CustomJsonObjectRequest(Request.Method.POST,
             url,
@@ -175,14 +182,13 @@ public class MPassageiro {
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    Toast.makeText(contexto,"aee" + response.toString(),Toast.LENGTH_LONG);
+                    Toast.makeText(contexto,"Passageiro cadastrado com sucesso!",Toast.LENGTH_LONG).show();
                 }
             },
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Toast.makeText(contexto, "Error:" + error.getMessage(), Toast.LENGTH_LONG).show();
-
                 }
 
         });
@@ -193,7 +199,7 @@ public class MPassageiro {
         return false;
     }
 
-    public void atualizarPassageiro(RequestQueue rq, final Context contexto,Map<String,String> params, String url){
+    public void atualizarPassageiro(RequestQueue rq, final Context contexto, final Map<String,String> params, String url){
 
         CustomJsonObjectRequest cjor = new CustomJsonObjectRequest(Request.Method.POST,
                 url,
@@ -201,7 +207,8 @@ public class MPassageiro {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Toast.makeText(contexto,"aee" + response.toString(),Toast.LENGTH_LONG);
+                        Toast.makeText(contexto,"Passageiro atualizado com sucesso!" +
+                                response.toString(),Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -218,21 +225,27 @@ public class MPassageiro {
         rq.add(cjor);
 
 
-        GsonRequest<MPassageiro> gReq = new GsonRequest<MPassageiro>(url, MPassageiro.class, null,
-                new Response.Listener<MPassageiro>() {
-                    @Override
-                    public void onResponse(MPassageiro response) {
-                        Toast.makeText(contexto, "passageiro atualizado com sucesso", Toast.LENGTH_LONG).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(contexto, "Error:" + error.getMessage(), Toast.LENGTH_LONG).show();
-
-                    }
-                });
-        rq.add(gReq);
+//        GsonRequest<MPassageiro> gReq = new GsonRequest<MPassageiro>(url, MPassageiro.class, null,
+//                new Response.Listener<MPassageiro>() {
+//                    @Override
+//                    public void onResponse(MPassageiro response) {
+//                        Toast.makeText(contexto, "passageiro atualizado com sucesso", Toast.LENGTH_LONG).show();
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Toast.makeText(contexto, "Error:" + error.getMessage(), Toast.LENGTH_LONG).show();
+//
+//                    }
+//                }){
+//
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                return params;
+//            }
+//        };
+//        rq.add(gReq);
     }
 
     public void getAllPassageiros(RequestQueue rq, final Context contexto, final VPassageiro vp,
@@ -247,6 +260,7 @@ public class MPassageiro {
                         for (int i = 0; i < response.size();i++){
                             vp.passageirosAdapter.add(response.get(i).getNome() + " - " + response.get(i).getCpf());
                         }
+                        vp.passageirosAdapter.notifyDataSetChanged();
                     }
                 },
                 new Response.ErrorListener() {
@@ -262,7 +276,6 @@ public class MPassageiro {
 
     public ArrayList<MPassageiro> selecionarPassageiros(){
         ArrayList<MPassageiro> passageiros = new ArrayList<MPassageiro>();
-
         return passageiros;
     }
 

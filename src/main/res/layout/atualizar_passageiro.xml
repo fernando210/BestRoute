@@ -80,6 +80,7 @@
             android:id="@+id/textView11"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:text="Nome do Destino" />
 
         <EditText
@@ -88,6 +89,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
+            android:visibility="gone"
             android:maxLength="50" />
 
         <TextView

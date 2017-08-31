@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -16,9 +18,14 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.plus.model.people.Person;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 import fgv.Controller.CPassageiro;
 import fgv.Controller.R;
@@ -80,7 +87,6 @@ public class VAtualizarPassageiro  extends Activity implements PlaceSelectionLis
         edCpf = (EditText) findViewById(R.id.edCpf);
         edTelefone = (EditText) findViewById(R.id.edTelefone);
         edDestino = (EditText) findViewById(R.id.edDestino);
-
         edNomeResponsavel = (EditText) findViewById(R.id.edNomeResponsavel);
         edTelefoneResponsavel = (EditText) findViewById(R.id.edTelefoneResponsavel);
         chAtivo = (CheckBox) findViewById(R.id.chAtivo);
@@ -93,6 +99,9 @@ public class VAtualizarPassageiro  extends Activity implements PlaceSelectionLis
         PlaceAutocompleteFragment places= (PlaceAutocompleteFragment)getFragmentManager().findFragmentById(R.id.edLogradouro);
         EditText etPlace = (EditText)places.getView().findViewById(R.id.place_autocomplete_search_input);
         etPlace.setText(passageiro.getLogradouro());
+        logradouro = passageiro.getLogradouro();
+        currentLatitude = passageiro.getLatitude();
+        currentLongitude = passageiro.getLongitude();
 
         edNomeResponsavel.setText(passageiro.getNomeResponsavel());
         edTelefoneResponsavel.setText(passageiro.getTelefoneResponsavel());
@@ -106,6 +115,36 @@ public class VAtualizarPassageiro  extends Activity implements PlaceSelectionLis
         btAtualizar.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v){
+
+                boolean hasErro = false;
+                if(TextUtils.isEmpty(edCpf.getText().toString()) || edCpf.getText().toString().length() < 11){
+                    edCpf.setError("Digite um cpf");
+                    hasErro = true;
+                }
+                if(TextUtils.isEmpty(edNome.getText().toString())){
+                    edNome.setError("Digite o nome");
+                    hasErro = true;
+                }
+                if(TextUtils.isEmpty(edTelefone.getText().toString())){
+                    edTelefone.setError("Digite o telefone");
+                    hasErro = true;
+                }
+                if(TextUtils.isEmpty(logradouro)){
+                    Toast.makeText(VAtualizarPassageiro.this, "Busque um endereço", Toast.LENGTH_LONG).show();
+                    edTelefone.setError("Busque um endereço");
+                    hasErro = true;
+                }
+                if(TextUtils.isEmpty(edNomeResponsavel.getText().toString())){
+                    edNomeResponsavel.setError("Digite o nome do responsável");
+                    hasErro = true;
+                }
+                if(TextUtils.isEmpty(edTelefoneResponsavel.getText().toString())){
+                    edTelefoneResponsavel.setError("Digite o telefone do responsável");
+                    hasErro = true;
+                }
+                if(hasErro)
+                    return;
+
                 passageiro.setNome(edNome.getText().toString());
                 passageiro.setTelefone(edTelefone.getText().toString());
                 passageiro.setLogradouro(logradouro == null ? passageiro.getLogradouro() : logradouro);
@@ -119,11 +158,6 @@ public class VAtualizarPassageiro  extends Activity implements PlaceSelectionLis
                 rq = Volley.newRequestQueue(getBaseContext());
                 try {
                     cp.atualizarPassageiro(rq, getBaseContext(),passageiro);
-//                    for (int i = 0; i < lstPassageiros.sie(); i++){
-//                        if(lstPassageiros.getIndex(i).getId().equals(passageiro.getId())){
-//                            lstPassageiros.getIndex(i) = passageiro;
-//                        }
-//                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

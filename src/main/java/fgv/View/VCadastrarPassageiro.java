@@ -11,8 +11,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -32,8 +34,12 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +68,9 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
     private double currentLatitude;
     private double currentLongitude;
     private String logradouro;
+
+    private ArrayList<MPassageiro> lstPassageiros;
+    private ArrayAdapter<String> lstPassageirosAdapter;
 
     @Override
     public void onPlaceSelected(Place place){
@@ -98,7 +107,34 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
 
                 MPassageiro passageiro = new MPassageiro();
 
-                //passageiro.setAtivo(1);
+                boolean hasErro = false;
+                if(TextUtils.isEmpty(cpf.getText().toString()) || cpf.getText().toString().length() < 11){
+                    cpf.setError("Digite um cpf");
+                    hasErro = true;
+                }
+                if(TextUtils.isEmpty(nome.getText().toString())){
+                    nome.setError("Digite o nome");
+                    hasErro = true;
+                }
+                if(TextUtils.isEmpty(telefone.getText().toString())){
+                    telefone.setError("Digite o telefone");
+                    hasErro = true;
+                }
+                if(TextUtils.isEmpty(logradouro)){
+                    Toast.makeText(VCadastrarPassageiro.this, "Preencha o endereço", Toast.LENGTH_LONG).show();
+                    hasErro = true;
+                }
+                if(TextUtils.isEmpty(nomeResponsavel.getText().toString())){
+                    nomeResponsavel.setError("Digite o nome do responsável");
+                    hasErro = true;
+                }
+                if(TextUtils.isEmpty(telefoneResponsavel.getText().toString())){
+                    telefoneResponsavel.setError("Digite o telefone do responsável");
+                    hasErro = true;
+                }
+                if(hasErro)
+                    return;
+
                 passageiro.setNome(nome.getText().toString());
                 passageiro.setCpf(cpf.getText().toString());
                 passageiro.setTelefone(telefone.getText().toString());
@@ -114,18 +150,9 @@ public class VCadastrarPassageiro extends Activity implements PlaceSelectionList
                     CPassageiro cp = new CPassageiro();
                     rq = Volley.newRequestQueue(getBaseContext());
                     cp.inserirPassageiroVolley(rq, getBaseContext(),passageiro);
-                    //lstPassageiros.Add(passageiro);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-//                if(passageiro.inserirPassageiro(passageiro)){
-//                    displayToast("Passageiro inserido com sucesso!");
-//                }
-//                else{
-//                    displayToast("erro ao inserir passageiro.");
-//                }
             }
 
             private void displayToast(String msg)

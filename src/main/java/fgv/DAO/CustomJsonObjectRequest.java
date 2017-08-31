@@ -40,11 +40,10 @@ public class CustomJsonObjectRequest extends Request<JSONObject> {
     @Override
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
         try {
-            String js = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-            return Response.success( new JSONObject(js.toString()),HttpHeaderParser.parseCacheHeaders(response));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+//            String js = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+//            return Response.success( new JSONObject(js.toString()),HttpHeaderParser.parseCacheHeaders(response));
+            return Response.success( new JSONObject(),HttpHeaderParser.parseCacheHeaders(response));
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return null;

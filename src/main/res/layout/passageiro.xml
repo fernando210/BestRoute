@@ -19,6 +19,7 @@
         android:id="@+id/btConsultarPassageiro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Editar Passageiro" />
+        android:text="Editar Passageiro"
+        android:enabled="false"/>
 
 </LinearLayout>
