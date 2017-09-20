@@ -1,12 +1,8 @@
 package fgv.Model;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -17,15 +13,9 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
-import fgv.DAO.CustomJsonObjectRequest;
-import fgv.DAO.GsonRequest;
-import fgv.View.VAtualizarPassageiro;
-import fgv.View.VPassageiro;
-
-import static android.app.Activity.RESULT_OK;
+import fgv.Controller.CPassageiro;
 
 /**
  * Created by Fernando on 16/01/2017.
@@ -248,7 +238,7 @@ public class MPassageiro{
 //        rq.add(gReq);
     }
 
-    public void getAllPassageiros(RequestQueue rq, final Context contexto, final VPassageiro vp,
+    public void getAllPassageiros(RequestQueue rq, final Context contexto, final CPassageiro vp,
                                   Map<String,String> params, String url){
 
         Type type = new TypeToken<ArrayList<MPassageiro>>() {}.getType();

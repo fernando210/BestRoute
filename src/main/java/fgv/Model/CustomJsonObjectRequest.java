@@ -1,4 +1,4 @@
-package fgv.DAO;
+package fgv.Model;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;

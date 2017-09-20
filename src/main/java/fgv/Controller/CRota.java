@@ -1,12 +1,14 @@
 package fgv.Controller;
 
+import android.app.Activity;
+
 import fgv.Model.MRota;
 
 /**
  * Created by Fernando on 16/01/2017.
  */
 
-public class CRota {
+public class CRota extends Activity {
 
     public MRota consultarRota(){
         MRota rota = new MRota();
@@ -54,6 +56,5 @@ public class CRota {
     public void confirmarEntregaCasa(){
 
     }
-
 
 }

@@ -1,4 +1,4 @@
-package fgv.View;
+package fgv.Controller;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -18,17 +18,8 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.plus.model.people.Person;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-
-import fgv.Controller.CPassageiro;
-import fgv.Controller.R;
 import fgv.Model.MPassageiro;
 
 import static android.content.ContentValues.TAG;
@@ -37,7 +28,7 @@ import static android.content.ContentValues.TAG;
  * Created by Vinicius on 28/03/2017.
  */
 
-public class VAtualizarPassageiro  extends Activity implements PlaceSelectionListener {
+public class CAtualizarPassageiro extends Activity implements PlaceSelectionListener {
 
     private EditText edNome;
     private EditText edCpf;
@@ -70,6 +61,8 @@ public class VAtualizarPassageiro  extends Activity implements PlaceSelectionLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.atualizar_passageiro);
+
+        cp = new CPassageiro();
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.edLogradouro);
@@ -117,7 +110,7 @@ public class VAtualizarPassageiro  extends Activity implements PlaceSelectionLis
             public void onClick(View v){
 
                 boolean hasErro = false;
-                if(TextUtils.isEmpty(edCpf.getText().toString()) || edCpf.getText().toString().length() < 11){
+                if(!cp.isValidCpf(edCpf.getText().toString())){
                     edCpf.setError("Digite um cpf");
                     hasErro = true;
                 }
@@ -130,7 +123,7 @@ public class VAtualizarPassageiro  extends Activity implements PlaceSelectionLis
                     hasErro = true;
                 }
                 if(TextUtils.isEmpty(logradouro)){
-                    Toast.makeText(VAtualizarPassageiro.this, "Busque um endereço", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CAtualizarPassageiro.this, "Busque um endereço", Toast.LENGTH_LONG).show();
                     edTelefone.setError("Busque um endereço");
                     hasErro = true;
                 }

@@ -1,4 +1,4 @@
-package fgv.DAO;
+package fgv.Model;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;

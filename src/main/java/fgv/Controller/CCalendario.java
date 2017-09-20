@@ -2,8 +2,6 @@ package fgv.Controller;
 
 import java.util.Date;
 
-import static android.R.id.summary;
-
 /**
  * Created by Fernando on 16/01/2017.
  */

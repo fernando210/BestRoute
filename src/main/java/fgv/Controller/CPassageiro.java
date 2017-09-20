@@ -1,42 +1,121 @@
 package fgv.Controller;
 
+import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.Toolbar;
 
 import com.android.volley.RequestQueue;
-import com.google.android.gms.cast.Cast;
-import com.google.android.gms.cast.games.GameManagerState;
-import com.google.android.gms.maps.model.LatLng;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-
-import fgv.DAO.PassageiroDAO;
 import fgv.Model.MPassageiro;
-import fgv.View.VAtualizarPassageiro;
-import fgv.View.VPassageiro;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
- * Created by Fernando on 16/01/2017.
+ * Created by Vinicius on 28/03/2017.
  */
 
-public class CPassageiro {
+public class CPassageiro extends Activity implements Serializable {
 
-    MPassageiro passageiro;
+    private static final int READ_BLOCK_SIZE = 100;
+
+    private AutoCompleteTextView actvNome;
+    private RequestQueue rq;
+
+    public ArrayList<MPassageiro> lstPassageiros = new ArrayList<MPassageiro>();
+    public ArrayAdapter<String> passageirosAdapter;
+
+    MPassageiro passageiro = new MPassageiro();
     GoogleAPI gApi;
+    private static final int[] weightCpf = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
 
-    public CPassageiro(){
-        passageiro = new MPassageiro();
-        gApi = new GoogleAPI();
+    @Override
+    protected void onResume() {
+        rq = Volley.newRequestQueue(getBaseContext());
+        try {
+            passageirosAdapter.clear();
+            getAllPassageiros(rq,getBaseContext(), this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        passageirosAdapter.notifyDataSetChanged();
+        super.onResume();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.passageiro);
+
+
+        passageirosAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line);
+        actvNome = (AutoCompleteTextView) findViewById(R.id.actvNome);
+        actvNome.setAdapter(passageirosAdapter);
+
+        final Button btConsultarPassageiro = (Button) findViewById(R.id.btConsultarPassageiro);
+
+        actvNome.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(actvNome.getText().toString().equals("")){
+                    btConsultarPassageiro.setEnabled(false);
+                }
+                else{
+                    btConsultarPassageiro.setEnabled(true);
+                }
+            }
+        });
+
+        btConsultarPassageiro.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View v){
+                Intent iAtualizarPassageiro = new Intent(CPassageiro.this, CAtualizarPassageiro.class);
+                iAtualizarPassageiro.putExtra("passageiro",
+                        (new Gson()).toJson(getPassageiro(lstPassageiros,
+                                actvNome.getText().toString()))
+                );
+                startActivity(iAtualizarPassageiro);
+            }
+        });
+
+        Button btCadastrarPassageiro = (Button) findViewById(R.id.btCadastrarPassageiro);
+
+        btCadastrarPassageiro.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View v){
+                Intent iCadastrarPassageiro = new Intent(CPassageiro.this, CCadastrarPassageiro.class);
+                //iCadastrarPassageiro.putExtra("lstPassageiros", (new Gson()).toJson(lstPassageiros));
+                //iCadastrarPassageiro.putExtra("passageirosAdapter", (new Gson()).toJson(passageirosAdapter));
+                startActivity(iCadastrarPassageiro);
+            }
+        });
     }
 
     public boolean inserirPassageiroVolley(RequestQueue rq, Context contexto, MPassageiro p){
@@ -70,7 +149,7 @@ public class CPassageiro {
         return passageiro.inserirPassageiroVolley(rq, contexto, params, url);
     }
 
-    public void getAllPassageiros(RequestQueue rq, Context contexto, VPassageiro vp) throws JSONException {
+    public void getAllPassageiros(RequestQueue rq, Context contexto, CPassageiro vp) throws JSONException {
         JSONObject js = new JSONObject();
         js.put("motoristaId",1);
 
@@ -130,8 +209,32 @@ public class CPassageiro {
         passageiro.atualizarPassageiro(rq,contexto, params, url);
     }
 
-    public void excluirPassageiro(){
+    public boolean enderecoSemNumero(String endereco){
+        String [] enderecoQuebrado = endereco.split(",");
+        Pattern p =  Pattern.compile("[0-9]+\\s?-\\s?[A-Za-z]+");
 
+        if(p.matcher(endereco).find(0) == true){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isValidCpf(final String cpf) {
+        if ((cpf == null) || (cpf.length() != 11) || cpf.matches(cpf.charAt(0) + "{11}")) return false;
+
+        final Integer digit1 = calcular(cpf.substring(0, 9), weightCpf);
+        final Integer digit2 = calcular(cpf.substring(0, 9) + digit1, weightCpf);
+        return cpf.equals(cpf.substring(0, 9) + digit1.toString() + digit2.toString());
+    }
+
+    private static int calcular(final String str, final int[] weight) {
+        int sum = 0;
+        for (int i = str.length() - 1, digit; i >= 0; i--) {
+            digit = Integer.parseInt(str.substring(i, i + 1));
+            sum += digit * weight[weight.length - str.length() + i];
+        }
+        sum = 11 - sum % 11;
+        return sum > 9 ? 0 : sum;
     }
 
 }

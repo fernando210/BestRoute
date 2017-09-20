@@ -1,6 +1,5 @@
 package fgv.Controller;
 
-import android.location.LocationManager;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
@@ -26,7 +25,7 @@ public class CRelogio {
 
     public Map<LatLng, Integer> identificarLocalizacao(){
         Map<LatLng,Integer> retorno = new HashMap<LatLng,Integer>();
-        GoogleAPI gApi = new GoogleAPI();
+        GoogleAPI gApi = new GoogleAPI(new CPassageiro());
         LatLng latLng = gApi.identificarLocalizacao();
         gApi.identificarTempoProximoDestino(latLng.toString(),rota.getDestino(),"text");
         //solucoes para pegar index do passageiro: 1- contador que a cada mensagem exibida de passageiro pego incrementa 1

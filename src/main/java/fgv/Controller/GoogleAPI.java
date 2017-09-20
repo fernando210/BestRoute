@@ -1,10 +1,6 @@
 package fgv.Controller;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -15,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -26,34 +21,34 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import fgv.Model.MRota;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 /**
  * Created by Fernando on 17/01/2017.
  */
 
-public class GoogleAPI extends Core implements GoogleApiClient.ConnectionCallbacks,
+public class GoogleAPI implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private final static String DIRECTION_API = "AIzaSyDODtIkOBbLPKCZ7kEHc9Dapv2430dXeNI";
     GoogleApiClient mGoogleApiClient;
+    CPassageiro cp;
+    public GoogleAPI(CPassageiro cpass){
+        cp = cpass;
+    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(cp, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(cp, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -84,7 +79,7 @@ public class GoogleAPI extends Core implements GoogleApiClient.ConnectionCallbac
 //        sendBroadcast(intent);location
     }
     private synchronized void createGoogleApi() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(cp)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -95,22 +90,23 @@ public class GoogleAPI extends Core implements GoogleApiClient.ConnectionCallbac
     public LatLng identificarLocalizacao(){
 
         try {
-            LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-            // Creating a criteria object to retrieve provider
-            Criteria criteria = new Criteria();
-            // Getting the name of the best provider
-            String provider = lm.getBestProvider(criteria, true);
-            LatLng latLng = new LatLng(0,0);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            }
-            Location location = lm.getLastKnownLocation(provider);
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            latLng = new LatLng(latitude, longitude);
-
-            // Creating a LatLng object for the current location
-            return latLng;
+//            LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+//            // Creating a criteria object to retrieve provider
+//            Criteria criteria = new Criteria();
+//            // Getting the name of the best provider
+//            String provider = lm.getBestProvider(criteria, true);
+//            LatLng latLng = new LatLng(0,0);
+//            if (ActivityCompat.checkSelfPermission(cp, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//
+//            }
+//            Location location = lm.getLastKnownLocation(provider);
+//            double latitude = location.getLatitude();
+//            double longitude = location.getLongitude();
+//            latLng = new LatLng(latitude, longitude);
+//
+//            // Creating a LatLng object for the current location
+//            return latLng;
+            return null;
         }
         catch(Exception ex){
             return null;
