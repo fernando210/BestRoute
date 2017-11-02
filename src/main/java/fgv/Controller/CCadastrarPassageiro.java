@@ -53,6 +53,8 @@ public class CCadastrarPassageiro extends Activity implements PlaceSelectionList
 
         if(cp.enderecoSemNumero(logradouro))
             logradouroSemNumero = true;
+        else
+            logradouroSemNumero = false;
 
         currentLatitude = place.getLatLng().latitude;
         currentLongitude = place.getLatLng().longitude;

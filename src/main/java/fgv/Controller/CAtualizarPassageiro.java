@@ -45,12 +45,20 @@ public class CAtualizarPassageiro extends Activity implements PlaceSelectionList
     private double currentLatitude;
     private double currentLongitude;
     private String logradouro;
+    private boolean logradouroSemNumero = false;
 
     @Override
     public void onPlaceSelected(Place place) {
+        logradouro = place.getAddress().toString();
+
+        if(cp.enderecoSemNumero(logradouro))
+            logradouroSemNumero = true;
+        else
+            logradouroSemNumero = false;
+
         currentLatitude = place.getLatLng().latitude;
         currentLongitude = place.getLatLng().longitude;
-        logradouro = place.getAddress().toString();
+
     }
 
     @Override
@@ -122,9 +130,8 @@ public class CAtualizarPassageiro extends Activity implements PlaceSelectionList
                     edTelefone.setError("Digite o telefone");
                     hasErro = true;
                 }
-                if(TextUtils.isEmpty(logradouro)){
-                    Toast.makeText(CAtualizarPassageiro.this, "Busque um endereço", Toast.LENGTH_LONG).show();
-                    edTelefone.setError("Busque um endereço");
+                if(TextUtils.isEmpty(logradouro) || logradouroSemNumero){
+                    Toast.makeText(CAtualizarPassageiro.this, "Preencha o endereço com número", Toast.LENGTH_LONG).show();
                     hasErro = true;
                 }
                 if(TextUtils.isEmpty(edNomeResponsavel.getText().toString())){
