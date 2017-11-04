@@ -27,7 +27,8 @@ import fgv.Model.MRota;
 
 public class CRota extends Activity {
 
-    private ArrayList<Cromossomo> populacao;
+    private ArrayList<Cromossomo> rota;
+    private ArrayList<MRota> populacao;
     public ArrayList<MPassageiroDistancia> lstPassageirosDistancias;
     private RequestQueue rq;
     private int _SIZEPOPULACAO = 0;
@@ -74,15 +75,44 @@ public class CRota extends Activity {
             //----------Executa o AG para calcular a melhor rota----------------
 
             //primeiro passo: criacao da populacao e calculo de fitness individual
-            //**criar random para gerar pop aleatoriamente
-            for (int i = 0; i < lstPassageiros.size(); i++){
-                populacao.add(new Cromossomo(lstPassageiros.get(i).getId()));
+            //CRIAÇÃO ALEATÓRIA DE POPULAÇÃO INICIAL
+            String passInseridos = "";
+            while(populacao.size() < lstPassageiros.size()){
 
+                int randPassageiro = (int)(Math.random() * (lstPassageiros.size()));
+                if (passInseridos.contains("," + String.valueOf(randPassageiro) + ",")) {
+                    populacao.add(new Cromossomo(lstPassageiros.get(randPassageiro).getId()));
+                    passInseridos = passInseridos + "," + String.valueOf(randPassageiro) + ",";
+                }
+            }
+
+            //calcula fitness local
+            // Vinicius 04/11 * alterei o calculo de fitness para o ponto i para i+1, ou seja, calcula o fitness baseado
+            // no proximo ponto. E o último vai para o endereço da escola
+            for (int i = 0; i < populacao.size(); i++){
+                if (i + 1 < populacao.size()){
+                    populacao.get(i).setFitness_PerGen(calcularFitness(lstPassageiros.get(i - 1).getId(), lstPassageiros.get(i).getId()));
+                }
+                else {
+                    populacao.get(i).setFitness_PerGen(calcularFitness(lstPassageiros.get(i).getId(), lstPassageiros.get(i + 1).getId()));
+                }
+            }
+
+            /*for (int i = 0; i < lstPassageiros.size(); i++){
+
+                int randPassageiro = (int)(Math.random() * (lstPassageiros.size()));
+                if (passInseridos.contains("," + String.valueOf(randPassageiro) + ",")) {
+                    populacao.add(new Cromossomo(lstPassageiros.get(randPassageiro).getId()));
+                    passInseridos = passInseridos + "," + String.valueOf(randPassageiro) + ",";
+                }
+                else{
+                    i = i ‐ 1;
+                }
                 if(i > 0){
                     //calcula fitness local
                     populacao.get(i).setFitness_PerGen(calcularFitness(lstPassageiros.get(i - 1).getId(), lstPassageiros.get(i).getId()));
                 }
-            }
+            }*/
 
             //calcula fitness percent
             calcularFitnessPercent();
@@ -93,8 +123,8 @@ public class CRota extends Activity {
             for(int i = 0; i < (_SIZEPOPULACAO/2); i++)
             {
                 //Selecionar os pais para cruzamento
-                Cromossomo pai = Roleta(populacaoOld);
-                Cromossomo mae = Roleta(populacaoOld);
+                ArrayList<Cromossomo> pai = Roleta(populacaoOld);
+                ArrayList<Cromossomo> mae = Roleta(populacaoOld);
 
                 //Realizar o Cruzamento
                 Cromossomo[] filhos = new PMX(pai, mae);

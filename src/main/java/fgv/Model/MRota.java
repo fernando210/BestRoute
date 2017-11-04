@@ -26,7 +26,7 @@ import fgv.Controller.CRota;
 public class MRota {
 
     private int cdRota;
-    private String destino;
+    private int destino;
     private ArrayList<MPassageiro> passageiros;
     private Map<Integer,Integer > tempoProxDest = new HashMap<Integer, Integer>();
     private int tempoTotal;
@@ -54,11 +54,11 @@ public class MRota {
         this.cdRota = cdRota;
     }
 
-    public String getDestino() {
+    public int getDestino() {
         return destino;
     }
 
-    public void setDestino(String destino) {
+    public void setDestino(int destino) {
         this.destino = destino;
     }
 
