@@ -88,7 +88,6 @@ public class CCadastrarPassageiro extends Activity implements PlaceSelectionList
                 telefoneResponsavel = (EditText) findViewById(R.id.edTelefoneResponsavel);
 
                 MPassageiro passageiro = new MPassageiro();
-
                 boolean hasErro = false;
                 if(!cp.isValidCpf(cpf.getText().toString())){
                     cpf.setError("Digite um cpf válido");
@@ -141,6 +140,8 @@ public class CCadastrarPassageiro extends Activity implements PlaceSelectionList
                 Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
             }
         });
+
+
     }
 
 }

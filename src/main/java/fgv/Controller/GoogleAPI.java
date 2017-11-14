@@ -6,6 +6,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -154,7 +155,7 @@ public class GoogleAPI implements GoogleApiClient.ConnectionCallbacks,
 
         StringWriter retornoTempo = new StringWriter();
         try {
-            String stringUrl = "http://maps.google.com/maps/api/directions/json?";
+            String stringUrl = "https://maps.google.com/maps/api/directions/json?";
             stringUrl += "origin=" + latLong;
             stringUrl += "&destination=" + destino;
             stringUrl += "&key=" + DIRECTION_API;
@@ -186,6 +187,46 @@ public class GoogleAPI implements GoogleApiClient.ConnectionCallbacks,
         }
     }
 
+    public String identificarDistanciaProximoDestino(String latLong, String destino){
+
+        StringWriter retornoTempo = new StringWriter();
+        try {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+            StrictMode.setThreadPolicy(policy);
+            String stringUrl = "https://maps.google.com/maps/api/directions/json?";
+            stringUrl += "origin=" + latLong;
+            stringUrl += "&destination=" + destino;
+            stringUrl += "&key=" + DIRECTION_API;
+
+            URL url = new URL(stringUrl);
+            HttpURLConnection httpconn = (HttpURLConnection)url.openConnection();
+            if (httpconn.getResponseCode() == HttpURLConnection.HTTP_OK)
+            {
+                BufferedReader input = new BufferedReader(new InputStreamReader(httpconn.getInputStream()),8192);
+                String strLine = null;
+                while ((strLine = input.readLine()) != null)
+                {
+                    retornoTempo.append(strLine);
+                }
+                input.close();
+            }
+            String saidaJson = retornoTempo.toString();
+            JSONObject jsonObj = new JSONObject(saidaJson);
+            JSONArray ArrayRotas = jsonObj.getJSONArray("routes");
+            JSONObject route = ArrayRotas.getJSONObject(0);
+            JSONArray legs = route.getJSONArray("legs");
+            JSONObject leg = legs.getJSONObject(0);
+            JSONObject distanceObject = leg.getJSONObject("distance");
+            String valor = distanceObject.getString("value");
+            return valor.toString();
+        }
+        catch (Exception e) {
+            return "erro: " + e.getMessage();
+        }
+    }
+
+
     public MRota calcularTempoDeRota(MRota rota)throws Exception{
 
         String duracao = "";
@@ -197,8 +238,8 @@ public class GoogleAPI implements GoogleApiClient.ConnectionCallbacks,
                         rota.getPassageiros().get(i+1).getLogradouro(),"value");
             }
             else{
-                duracao = identificarTempoProximoDestino(rota.getPassageiros().get(i).getLogradouro(),
-                        rota.getDestino(),"value");
+//                duracao = identificarTempoProximoDestino(rota.getPassageiros().get(i).getLogradouro(),
+//                        rota.getDestino(),"value");
             }
             duracao = duracao.toLowerCase().replace("min","").replace("mins","").trim();
             rota.setTempoProxDest(rota.getPassageiros().get(i).getId(),Integer.valueOf(duracao));

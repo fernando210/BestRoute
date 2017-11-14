@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import fgv.Model.MPassageiro;
 
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +63,6 @@ public class CPassageiro extends Activity implements Serializable {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.passageiro);
-
 
         passageirosAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line);
@@ -117,6 +117,45 @@ public class CPassageiro extends Activity implements Serializable {
             }
         });
     }
+
+    public void gerarDistancias(){
+
+        String result ="";
+        StringWriter st = new StringWriter();
+        GoogleAPI gApi = new GoogleAPI(new CPassageiro());
+
+        String query = "";
+
+        //distancias entre passageiros
+        for (int i = 0; i < lstPassageiros.size();i++){
+            for (int j = 0; j < lstPassageiros.size();j++){
+                result = gApi.identificarDistanciaProximoDestino(lstPassageiros.get(i).getLatitude().toString() + "," +
+                        lstPassageiros.get(i).getLongitude().toString(),
+                        lstPassageiros.get(j).getLatitude().toString() + "," +
+                                lstPassageiros.get(j).getLongitude().toString());
+
+                query = "INSERT INTO TB_PASSAGEIRODISTANCIA VALUES(" +
+                        lstPassageiros.get(i).getId() +
+                        ", " + lstPassageiros.get(j).getId()+ ",null,'" + result + "')";
+                st.append(query + "\n");
+            }
+        }
+
+        //destino
+        String destino = "-23.609310,-46.607653";
+        for (int i = 0; i < lstPassageiros.size();i++){
+            result = gApi.identificarDistanciaProximoDestino(lstPassageiros.get(i).getLatitude().toString() + "," +
+                            lstPassageiros.get(i).getLongitude().toString(),destino);
+
+            query = "INSERT INTO TB_PASSAGEIRODISTANCIA VALUES(" +
+                    lstPassageiros.get(i).getId() +
+                    ", null, 2, '" + result + "')";
+            st.append(query + "\n");
+
+        }
+
+    }
+
 
     public boolean inserirPassageiroVolley(RequestQueue rq, Context contexto, MPassageiro p){
 

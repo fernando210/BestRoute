@@ -52,6 +52,16 @@ public class MPassageiro{
 
     private int Ativo;
 
+    private double fitness;                             // chromosome fitness //
+
+    public double getFitness(){
+        return fitness;
+    }
+
+    public void setFitness(double fitness){
+        this.fitness = fitness;
+    }
+
     public int getAtivo() {
         return Ativo;
     }
@@ -250,6 +260,7 @@ public class MPassageiro{
                         for (int i = 0; i < response.size();i++){
                             vp.passageirosAdapter.add(response.get(i).getNome() + " - " + response.get(i).getCpf());
                         }
+                        //vp.gerarDistancias();
                         vp.passageirosAdapter.notifyDataSetChanged();
                     }
                 },

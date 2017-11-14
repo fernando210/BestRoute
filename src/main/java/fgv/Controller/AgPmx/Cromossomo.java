@@ -8,7 +8,8 @@ public class Cromossomo
 {
     private int cromossomoId;                           // uniquely identify a chromosome //
     private double weight;                              // weight of circuit //
-    private double fitness;                             // chromosome fitness //
+
+    private double fitness;
     private double fitnessPercent;                      // chromosome fitness Percent//
     private double[] faixaRoleta = { 0, 0 };            // Piece of the pizza which it can be selected //
 

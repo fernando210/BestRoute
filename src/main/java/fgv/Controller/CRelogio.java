@@ -23,15 +23,15 @@ public class CRelogio {
 
     }
 
-    public Map<LatLng, Integer> identificarLocalizacao(){
-        Map<LatLng,Integer> retorno = new HashMap<LatLng,Integer>();
-        GoogleAPI gApi = new GoogleAPI(new CPassageiro());
-        LatLng latLng = gApi.identificarLocalizacao();
-        gApi.identificarTempoProximoDestino(latLng.toString(),rota.getDestino(),"text");
-        //solucoes para pegar index do passageiro: 1- contador que a cada mensagem exibida de passageiro pego incrementa 1
-        //2- rodar o verificarLocalizacaoVeiculo() dentro de um for de passageiros.
-        return retorno;
-    }
+//    public Map<LatLng, Integer> identificarLocalizacao(){
+//        Map<LatLng,Integer> retorno = new HashMap<LatLng,Integer>();
+//        GoogleAPI gApi = new GoogleAPI(new CPassageiro());
+//        LatLng latLng = gApi.identificarLocalizacao();
+//        gApi.identificarTempoProximoDestino(latLng.toString(),rota.getDestino(),"text");
+//        //solucoes para pegar index do passageiro: 1- contador que a cada mensagem exibida de passageiro pego incrementa 1
+//        //2- rodar o verificarLocalizacaoVeiculo() dentro de um for de passageiros.
+//        return retorno;
+//    }
 
     public void calcularTempo(){
 
@@ -56,7 +56,7 @@ public class CRelogio {
             do {
                 if(c == 20){
                     //TODO: Implementar para chamar mensagerias.
-                    identificarLocalizacao();
+//                    identificarLocalizacao();
                     c = 0;
                 }
 

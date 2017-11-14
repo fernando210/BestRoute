@@ -30,6 +30,36 @@ public class MRota {
     private ArrayList<MPassageiro> passageiros;
     private Map<Integer,Integer > tempoProxDest = new HashMap<Integer, Integer>();
     private int tempoTotal;
+    private double fitness;
+    private double fitnessPercent;
+    private double[] faixaRoleta = { 0, 0 };            // Piece of the pizza which it can be selected //
+
+    public void setRangeRoleta(double inicio, double fim)
+    {
+        faixaRoleta[0] = inicio;
+        faixaRoleta[1] = fim;
+    }
+
+    public double[] getRangeRoleta()
+    {
+        return this.faixaRoleta;
+    }
+
+    public double getFitnessRota(){
+        return fitness;
+    }
+
+    public void setFitnessRota(double fitness){
+        this.fitness = fitness;
+    }
+
+    public double getFitnessPercent(){
+        return fitnessPercent;
+    }
+
+    public void setFitnessPercent(double fitness){
+        this.fitness = fitnessPercent;
+    }
 
     public int getTempoTotal() {
         return tempoTotal;
