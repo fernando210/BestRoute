@@ -70,6 +70,7 @@ public class CPassageiro extends Activity implements Serializable {
         actvNome.setAdapter(passageirosAdapter);
 
         final Button btConsultarPassageiro = (Button) findViewById(R.id.btConsultarPassageiro);
+        final Button btCalcularMelhorRota = (Button) findViewById(R.id.btCalcularMelhorRota);
 
         actvNome.addTextChangedListener(new TextWatcher() {
             @Override
@@ -104,6 +105,15 @@ public class CPassageiro extends Activity implements Serializable {
                 startActivity(iAtualizarPassageiro);
             }
         });
+
+        btCalcularMelhorRota.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View v){
+                CRota cr = new CRota();
+                cr.calcularMelhorRota(lstPassageiros,null, rq);
+            }
+        });
+
 
         Button btCadastrarPassageiro = (Button) findViewById(R.id.btCadastrarPassageiro);
 

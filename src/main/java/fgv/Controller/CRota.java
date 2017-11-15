@@ -9,6 +9,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
@@ -45,10 +46,11 @@ public class CRota extends Activity {
         return rota;
     }
 
-    public void calcularMelhorRota(ArrayList<MPassageiro> lstPassageiros, ArrayList<MRota> populacaoOld){
+    public void calcularMelhorRota(ArrayList<MPassageiro> lstPassageiros, ArrayList<MRota> populacaoOld, RequestQueue rq){
 
         ArrayList<MRota> populacao = populacaoOld;
 
+        this.rq = rq;
         for (int i = 0; i < _QTDEXECUCOES; i++){
             populacao = executaAg(lstPassageiros, populacao);
         }
@@ -66,6 +68,8 @@ public class CRota extends Activity {
         ArrayList<MPassageiro> passageirosNewRota = new ArrayList<MPassageiro>();
         int randPassageiro = 0;
         int indexPass = 0;
+        ArrayList<Integer> numeros = new ArrayList<Integer>();
+        int contador = 0;
 
         try {
             _SIZEPOPULACAO = 20;
@@ -73,7 +77,7 @@ public class CRota extends Activity {
             getPassageirosDistancias(lstPassageiros);
 
             //prende a execucao ate preencher a lista de distancias
-            while (lstPassageirosDistancias.size() == 0)
+            while (lstPassageirosDistancias == null)
                 Thread.sleep(300);
 
             //----------Executa o AG para calcular a melhor rota----------------
@@ -82,10 +86,17 @@ public class CRota extends Activity {
             //CRIAÇÃO ALEATÓRIA DE POPULAÇÃO INICIAL
 
             while(populacao.size() < _SIZEPOPULACAO){
+                numeros = new ArrayList<Integer>();
+                for (int i = 1; i < 61; i++) { //Sequencia da mega sena
+                    numeros.add(i);
+                }
+                contador = 0;
+
+                //Embaralhar os números:
+                Collections.shuffle(numeros);
 
                 while (newRota.getPassageiros().size() < lstPassageiros.size()){
-                    //TODO: Verificar pra nao gerar indexes repetidos
-                    randPassageiro = (int)(Math.random() * (lstPassageiros.size()));
+                    randPassageiro = numeros.get(contador);
                     passageirosNewRota.add(lstPassageiros.get(randPassageiro));
 
                     //calcula fitness local do passageiro anterior, pois o fitness eh a distancia ate o proximo ponto
@@ -102,6 +113,7 @@ public class CRota extends Activity {
                                         passageirosNewRota.get(passageirosNewRota.size()-1).getId())
                         );
                     }
+                    contador++;
                 }
                 newRota.setPassageiros(passageirosNewRota);
                 newRota.setFitnessRota(calcularFitnessRota(newRota));
@@ -117,8 +129,10 @@ public class CRota extends Activity {
             for(int i = 0; i < (_SIZEPOPULACAO/2); i++)
             {
                 //Selecionar os pais para cruzamento
-                MRota paiAux = Roleta(populacaoOld);
-                MRota maeAux = Roleta(populacaoOld);
+                MRota paiAux = Roleta(populacao);
+                MRota maeAux = Roleta(populacao);
+//                MRota paiAux = Roleta(populacaoOld);
+//                MRota maeAux = Roleta(populacaoOld);
 
                 //1 - criar array de int, com os ids dos passageiros
                 int [] pai = new int [paiAux.getPassageiros().size()] ;
@@ -158,8 +172,8 @@ public class CRota extends Activity {
                 maeAux.setPassageiros(lstPassageirosMae);
 
                 //Aplicar a mutação
-                MRota filhoA = Mutacao(paiAux);
-                MRota filhoB = Mutacao(maeAux);
+                MRota filhoA = ExchangeMutation(paiAux);
+                MRota filhoB = ExchangeMutation(maeAux);
 
                 //calcular fitness individuais
                 calcularFitnessLocais(filhoA.getPassageiros());
@@ -185,6 +199,10 @@ public class CRota extends Activity {
             //Re-Avaliar a populacao
             atualizarValores(novaPopulacao);
 
+            //aplicar o 2opt
+            for (int j = 0; j < novaPopulacao.size(); j++){
+                novaPopulacao.get(j).setPassageiros(twoOpt(novaPopulacao.get(j).getPassageiros()));
+            }
             return novaPopulacao;
 
         }
@@ -304,10 +322,63 @@ public class CRota extends Activity {
         return null;
     }
 
-    public MRota Mutacao(MRota ind)
+    public MRota ExchangeMutation(MRota rota)
     {
-        //TODO: Verificar como sera a mutacao para esse caso
-        return ind;
+        Random r = new Random();
+        if(r.nextDouble() <= _TAXAMUTACAO){
+            int primeiroRandom = r.nextInt();
+            int segundoRandom = r.nextInt();
+
+            MPassageiro mutacao1 = rota.getPassageiros().get(primeiroRandom);
+            rota.getPassageiros().set(primeiroRandom, rota.getPassageiros().get(segundoRandom));
+            rota.getPassageiros().set(segundoRandom, mutacao1);
+        }
+        return rota;
+    }
+
+    private ArrayList<MPassageiro> twoOpt(ArrayList<MPassageiro> passageiros){
+
+        boolean modified = true;
+        //se tiver menos de 4 passageiros nao precisa aplicar esse algoritmo
+        if(passageiros.size() < 4)
+            return passageiros;
+
+        while (modified) {
+            modified = false;
+
+            for (int i = 0; i < passageiros.size(); i++) {
+                for (int j = i+2; j < passageiros.size(); j++) {
+
+                    double d1 = calcularFitness(passageiros.get(i).getId(),passageiros.get(i+1).getId()) +
+                            calcularFitness(passageiros.get(j).getId(), passageiros.get(j+1).getId());
+
+                    double d2 = calcularFitness(passageiros.get(i).getId(),passageiros.get(j).getId()) +
+                            calcularFitness(passageiros.get(i+1).getId(), passageiros.get(j+1).getId());
+
+//                    double d1 = distanceTable.getDistanceBetween(tour.get(i), tour.get(i+1)) +
+//                            distanceTable.getDistanceBetween(tour.get(j), tour.get(j+1));
+//                    double d2 = distanceTable.getDistanceBetween(tour.get(i), tour.get(j)) +
+//                            distanceTable.getDistanceBetween(tour.get(i+1), tour.get(j+1));
+
+
+                    // if distance can be shortened, adjust the tour
+                    if (d2 < d1) {
+                        passageiros = trocarPosicoes(passageiros, i+1,j);
+//                        tour.reverse(i+1, j);
+                        modified = true;
+                    }
+                }
+            }
+        }
+        return passageiros;
+    }
+
+    private ArrayList<MPassageiro> trocarPosicoes(ArrayList<MPassageiro> passageiros,
+                                                  int primeiroIndex, int segundoIndice){
+        MPassageiro passageiroAux = passageiros.get(primeiroIndex);
+        passageiros.set(primeiroIndex, passageiros.get(segundoIndice));
+        passageiros.set(segundoIndice, passageiroAux);
+        return passageiros;
     }
 
     private int getIndexPassageiroPorId(ArrayList<MPassageiro> passageiros, int id){
@@ -320,7 +391,7 @@ public class CRota extends Activity {
 
     private void getPassageirosDistancias(ArrayList<MPassageiro> lstPassageiros){
         MRota rotaModel = new MRota();
-        rq = Volley.newRequestQueue(getBaseContext());
+        //rq = Volley.newRequestQueue(getBaseContext());
 
         Map<String, String> params;
         params = new HashMap<String,String>();
