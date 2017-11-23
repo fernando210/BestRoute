@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="BestRoute - Passageiros"
+            android:text="BestRoute"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             android:textSize="16sp" />
@@ -25,23 +25,15 @@
     </android.support.v7.widget.Toolbar>
 
     <Button
-        android:id="@+id/btCadastrarPassageiro"
+        android:id="@+id/btPassageiro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Novo Passageiro" />
-
-    <AutoCompleteTextView
-        android:id="@+id/actvNome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Consulte um passageiro" />
+        android:text="Passageiro" />
 
     <Button
-        android:id="@+id/btConsultarPassageiro"
+        android:id="@+id/btRota"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Editar Passageiro"
-        android:enabled="false"/>
-
+        android:text="Rota"/>
 
 </LinearLayout>
