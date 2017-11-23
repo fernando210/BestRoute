@@ -6,40 +6,40 @@ package fgv.Model;
 
 public class MPassageiroDistancia {
 
-    private int idPassageiroInicio;
-    private int idPassageiroFim;
-    private int idDestino;
-    private double distancia;
+    private int IdPassageiroInicio;
+    private int IdPassageiroFim;
+    private int IdDestino;
+    private double Distancia;
 
     public int getIdPassageiroInicio() {
-        return idPassageiroInicio;
+        return IdPassageiroInicio;
     }
 
     public void setIdPassageiroInicio(int idPassageiroInicio) {
-        this.idPassageiroInicio = idPassageiroInicio;
+        this.IdPassageiroInicio = idPassageiroInicio;
     }
 
     public int getIdPassageiroFim() {
-        return idPassageiroFim;
+        return IdPassageiroFim;
     }
 
     public void setIdPassageiroFim(int idPassageiroFim) {
-        this.idPassageiroFim = idPassageiroFim;
+        this.IdPassageiroFim = idPassageiroFim;
     }
 
     public int getIdDestino() {
-        return idDestino;
+        return IdDestino;
     }
 
     public void setIdDestino(int idDestino) {
-        this.idDestino = idDestino;
+        this.IdDestino = idDestino;
     }
 
     public double getDistancia() {
-        return distancia;
+        return Distancia;
     }
 
     public void setDistancia(double distancia) {
-        this.distancia = distancia;
+        this.Distancia = distancia;
     }
 }

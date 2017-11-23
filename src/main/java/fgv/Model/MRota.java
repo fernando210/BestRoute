@@ -57,8 +57,8 @@ public class MRota {
         return fitnessPercent;
     }
 
-    public void setFitnessPercent(double fitness){
-        this.fitness = fitnessPercent;
+    public void setFitnessPercent(double fitnessPercent){
+        this.fitnessPercent = fitnessPercent;
     }
 
     public int getTempoTotal() {
@@ -107,14 +107,14 @@ public class MRota {
     }
 
     public void getPassageiroDistancia(RequestQueue rq, final Context contexto, final CRota cRota, final Map<String,String> params, String url){
-
         Type type = new TypeToken<ArrayList<MPassageiroDistancia>>() {}.getType();
+
         GsonRequest<ArrayList<MPassageiroDistancia>> gReq = new GsonRequest<ArrayList<MPassageiroDistancia>>(url, type, null,
                 new Response.Listener<ArrayList<MPassageiroDistancia>>() {
                     @Override
                     public void onResponse(ArrayList<MPassageiroDistancia> response) {
                         cRota.lstPassageirosDistancias = response;
-
+                        cRota.calcularMelhorRota();
                     }
                 },
                 new Response.ErrorListener() {

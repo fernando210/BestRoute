@@ -110,7 +110,7 @@ public class CPassageiro extends Activity implements Serializable {
 
             public void onClick(View v){
                 CRota cr = new CRota();
-                cr.calcularMelhorRota(lstPassageiros,null, rq);
+                cr.getDistancias(lstPassageiros, getBaseContext());
             }
         });
 
