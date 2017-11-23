@@ -1,18 +1,17 @@
 package fgv.Controller;
 
 import android.app.Activity;
-import android.widget.PopupMenu;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -45,6 +44,23 @@ public class CRota extends Activity {
 
         return rota;
     }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.menu_principal);
+
+        Button btCalcularMelhorRota = (Button) findViewById(R.id.btRota);
+
+        btCalcularMelhorRota.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View v){
+                CRota cr = new CRota();
+                cr.calcularMelhorRota(null,null, rq);
+            }
+        });
+    }
+
 
     public void calcularMelhorRota(ArrayList<MPassageiro> lstPassageiros, ArrayList<MRota> populacaoOld, RequestQueue rq){
 

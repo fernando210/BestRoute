@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name="fgv.Controller.CPassageiro" >
+        <activity android:name="fgv.Controller.CMenuPrincipal" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -25,6 +25,8 @@
 
         <activity android:name="fgv.Controller.CCadastrarPassageiro" />
         <activity android:name="fgv.Controller.CAtualizarPassageiro" />
+        <activity android:name="fgv.Controller.CPassageiro" />
+        <activity android:name="fgv.Controller.CRota" />
 
         <meta-data
             android:name="com.google.android.maps.v4.API_KEY"
