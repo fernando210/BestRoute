@@ -51,7 +51,7 @@ public class CPassageiro extends Activity implements Serializable {
         rq = Volley.newRequestQueue(getBaseContext());
         try {
             passageirosAdapter.clear();
-            getAllPassageiros(rq,getBaseContext(), this);
+            getAllPassageiros(rq,getBaseContext(), this, false);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -70,7 +70,7 @@ public class CPassageiro extends Activity implements Serializable {
         actvNome.setAdapter(passageirosAdapter);
 
         final Button btConsultarPassageiro = (Button) findViewById(R.id.btConsultarPassageiro);
-        final Button btCalcularMelhorRota = (Button) findViewById(R.id.btCalcularMelhorRota);
+//        final Button btCalcularMelhorRota = (Button) findViewById(R.id.btCalcularMelhorRota);
 
         actvNome.addTextChangedListener(new TextWatcher() {
             @Override
@@ -105,15 +105,6 @@ public class CPassageiro extends Activity implements Serializable {
                 startActivity(iAtualizarPassageiro);
             }
         });
-
-        btCalcularMelhorRota.setOnClickListener(new View.OnClickListener(){
-
-            public void onClick(View v){
-                CRota cr = new CRota();
-                cr.getDistancias(lstPassageiros, getBaseContext());
-            }
-        });
-
 
         Button btCadastrarPassageiro = (Button) findViewById(R.id.btCadastrarPassageiro);
 
@@ -198,7 +189,7 @@ public class CPassageiro extends Activity implements Serializable {
         return passageiro.inserirPassageiroVolley(rq, contexto, params, url);
     }
 
-    public void getAllPassageiros(RequestQueue rq, Context contexto, CPassageiro vp) throws JSONException {
+    public void getAllPassageiros(RequestQueue rq, Context contexto, CPassageiro vp, boolean isRota) throws JSONException {
         JSONObject js = new JSONObject();
         js.put("motoristaId",1);
 
@@ -208,7 +199,7 @@ public class CPassageiro extends Activity implements Serializable {
         params.put("json", js.toString());
 
         String url = "https://bestrouteapi.azurewebsites.net/Api/Mobile/GetAllPassageiros?motoristaId=1";
-        passageiro.getAllPassageiros(rq,contexto,vp,params,url);
+        passageiro.getAllPassageiros(rq,contexto,vp,params,url, isRota);
     }
 
     public MPassageiro getPassageiro(ArrayList<MPassageiro> lst, String texto){

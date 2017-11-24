@@ -1,12 +1,23 @@
 package fgv.Controller;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.PopupMenu;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -36,8 +47,13 @@ public class CRota extends Activity {
     private int _SIZEPOPULACAO = 0;
     private int _TAXAMUTACAO = 5;
     private int _QTDEXECUCOES = 30;
-    private ArrayList<MPassageiro> lstPassageiros;
     private Context context;
+    CPassageiro cp = new CPassageiro();
+    private ProgressDialog mprogressDialog;
+    public Button btCalcularMelhorRota;
+
+    public ArrayList<MPassageiro> lstPassageiros = new ArrayList<MPassageiro>();
+
     public CRota(){
         populacao = new ArrayList<MRota>();
     }
@@ -47,6 +63,35 @@ public class CRota extends Activity {
 
         return rota;
     }
+
+    @Override
+    protected void onResume() {
+        rq = Volley.newRequestQueue(getBaseContext());
+        try {
+            if(lstPassageiros.size() == 0)
+                cp.getAllPassageiros(rq,getBaseContext(), cp, true);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.rota);
+
+        btCalcularMelhorRota = (Button) findViewById(R.id.btCalcularMelhorRota);
+        btCalcularMelhorRota.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                CRota cr = new CRota();
+                mprogressDialog = ProgressDialog.show(CRota.this, "Aguarde", "Calculando melhores rotas...");
+                cr.getDistancias(lstPassageiros, getBaseContext());
+            }
+        });
+
+    }
+
 
     public void getDistancias(ArrayList<MPassageiro> lstPassageiros, Context context){
         this.lstPassageiros = lstPassageiros;
@@ -61,6 +106,9 @@ public class CRota extends Activity {
         for (int i = 0; i < _QTDEXECUCOES; i++) {
             populacao = executaAg(lstPassageiros, populacao, context);
         }
+
+        //encerra progress dialog
+        mprogressDialog.dismiss();
 
 //        String passageirosIds = "";
 //        for(int j = 0; j < populacao.size(); j++){

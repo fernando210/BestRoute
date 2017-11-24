@@ -6,13 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import java.io.Serializable;
-
 /**
  * Created by Vinicius on 28/03/2017.
  */
 
-public class CMenuPrincipal extends Activity implements Serializable {
+public class CMenuPrincipal extends Activity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

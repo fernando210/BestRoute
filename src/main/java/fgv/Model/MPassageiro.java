@@ -249,7 +249,7 @@ public class MPassageiro{
     }
 
     public void getAllPassageiros(RequestQueue rq, final Context contexto, final CPassageiro vp,
-                                  Map<String,String> params, String url){
+                                  Map<String,String> params, String url, final boolean isRota){
 
         Type type = new TypeToken<ArrayList<MPassageiro>>() {}.getType();
         GsonRequest<ArrayList<MPassageiro>> gReq = new GsonRequest<ArrayList<MPassageiro>>(url, type, null,
@@ -257,11 +257,13 @@ public class MPassageiro{
                     @Override
                     public void onResponse(ArrayList<MPassageiro> response) {
                         vp.lstPassageiros = response;
-                        for (int i = 0; i < response.size();i++){
-                            vp.passageirosAdapter.add(response.get(i).getNome() + " - " + response.get(i).getCpf());
+                        if(!isRota){
+                            for (int i = 0; i < response.size();i++){
+                                vp.passageirosAdapter.add(response.get(i).getNome() + " - " + response.get(i).getCpf());
+                            }
+                            //vp.gerarDistancias();
+                            vp.passageirosAdapter.notifyDataSetChanged();
                         }
-                        //vp.gerarDistancias();
-                        vp.passageirosAdapter.notifyDataSetChanged();
                     }
                 },
                 new Response.ErrorListener() {
