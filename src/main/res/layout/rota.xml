@@ -28,6 +28,7 @@
         android:id="@+id/btCalcularMelhorRota"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Calcular Melhor Rota"/>
+        android:text="Calcular Melhor Rota"
+        android:enabled="false"/>
 
 </LinearLayout>

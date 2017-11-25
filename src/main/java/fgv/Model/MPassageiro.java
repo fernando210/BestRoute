@@ -9,6 +9,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.reflect.TypeToken;
 
+import net.sourceforge.jtds.jdbc.CachedResultSet;
+
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import fgv.Controller.CPassageiro;
+import fgv.Controller.CRota;
 
 /**
  * Created by Fernando on 16/01/2017.
@@ -249,20 +252,24 @@ public class MPassageiro{
     }
 
     public void getAllPassageiros(RequestQueue rq, final Context contexto, final CPassageiro vp,
-                                  Map<String,String> params, String url, final boolean isRota){
+                                  Map<String,String> params, String url, final CRota rota){
 
         Type type = new TypeToken<ArrayList<MPassageiro>>() {}.getType();
         GsonRequest<ArrayList<MPassageiro>> gReq = new GsonRequest<ArrayList<MPassageiro>>(url, type, null,
                 new Response.Listener<ArrayList<MPassageiro>>() {
                     @Override
                     public void onResponse(ArrayList<MPassageiro> response) {
-                        vp.lstPassageiros = response;
-                        if(!isRota){
+                        if(rota == null){
+                            vp.lstPassageiros = response;
                             for (int i = 0; i < response.size();i++){
                                 vp.passageirosAdapter.add(response.get(i).getNome() + " - " + response.get(i).getCpf());
                             }
                             //vp.gerarDistancias();
                             vp.passageirosAdapter.notifyDataSetChanged();
+                        }
+                        else {
+                            rota.lstPassageiros = response;
+                            rota.btCalcularMelhorRota.setEnabled(true);
                         }
                     }
                 },

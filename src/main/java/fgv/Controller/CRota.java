@@ -69,7 +69,7 @@ public class CRota extends Activity {
         rq = Volley.newRequestQueue(getBaseContext());
         try {
             if(lstPassageiros.size() == 0)
-                cp.getAllPassageiros(rq,getBaseContext(), cp, true);
+                cp.getAllPassageiros(rq,getBaseContext(), null, this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -103,12 +103,29 @@ public class CRota extends Activity {
 
     public void calcularMelhorRota(){
         populacao = new ArrayList<MRota>();
-        for (int i = 0; i < _QTDEXECUCOES; i++) {
+//        for (int i = 0; i < _QTDEXECUCOES; i++) {
+//            populacao = executaAg(lstPassageiros, populacao, context);
+//        }
+        for (int i = 0; i < 1; i++) {
             populacao = executaAg(lstPassageiros, populacao, context);
         }
 
+        try {
+            Intent iMapa = new Intent(CRota.this, CMapa.class);
+            iMapa.putExtra("rota",
+                    (new Gson()).toJson(populacao.get(0))
+            );
+            startActivity(iMapa);
+        }
+        catch (Exception ex){
+            ex.getMessage();
+        }
+
+
         //encerra progress dialog
-        mprogressDialog.dismiss();
+        //mprogressDialog.dismiss();
+//        CMapa cm = new CMapa();
+//        cm.desenharRota(populacao.get(0));
 
 //        String passageirosIds = "";
 //        for(int j = 0; j < populacao.size(); j++){

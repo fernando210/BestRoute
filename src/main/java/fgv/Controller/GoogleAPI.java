@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 import fgv.Model.MRota;
 
@@ -247,6 +248,12 @@ public class GoogleAPI implements GoogleApiClient.ConnectionCallbacks,
         }
         rota.setTempoTotal(tempoTotal);
         return rota;
+    }
+
+    public void abrirRotaMaps(ArrayList<MRota> rota){
+
+
+
     }
 
 }

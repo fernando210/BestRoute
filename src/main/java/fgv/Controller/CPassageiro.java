@@ -51,7 +51,7 @@ public class CPassageiro extends Activity implements Serializable {
         rq = Volley.newRequestQueue(getBaseContext());
         try {
             passageirosAdapter.clear();
-            getAllPassageiros(rq,getBaseContext(), this, false);
+            getAllPassageiros(rq,getBaseContext(), this, null);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -189,7 +189,7 @@ public class CPassageiro extends Activity implements Serializable {
         return passageiro.inserirPassageiroVolley(rq, contexto, params, url);
     }
 
-    public void getAllPassageiros(RequestQueue rq, Context contexto, CPassageiro vp, boolean isRota) throws JSONException {
+    public void getAllPassageiros(RequestQueue rq, Context contexto, CPassageiro vp, CRota rota) throws JSONException {
         JSONObject js = new JSONObject();
         js.put("motoristaId",1);
 
@@ -199,7 +199,7 @@ public class CPassageiro extends Activity implements Serializable {
         params.put("json", js.toString());
 
         String url = "https://bestrouteapi.azurewebsites.net/Api/Mobile/GetAllPassageiros?motoristaId=1";
-        passageiro.getAllPassageiros(rq,contexto,vp,params,url, isRota);
+        passageiro.getAllPassageiros(rq,contexto,vp,params,url, rota);
     }
 
     public MPassageiro getPassageiro(ArrayList<MPassageiro> lst, String texto){
