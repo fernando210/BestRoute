@@ -1,5 +1,6 @@
 package fgv.Model;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -106,7 +107,8 @@ public class MRota {
         return rota;
     }
 
-    public void getPassageiroDistancia(RequestQueue rq, final Context contexto, final CRota cRota, final Map<String,String> params, String url){
+    public void getPassageiroDistancia(RequestQueue rq, final Context contexto, final CRota cRota,
+                                       final Map<String,String> params, String url, final CRota cr, final ProgressDialog mProgressDialog){
         Type type = new TypeToken<ArrayList<MPassageiroDistancia>>() {}.getType();
 
         GsonRequest<ArrayList<MPassageiroDistancia>> gReq = new GsonRequest<ArrayList<MPassageiroDistancia>>(url, type, null,
@@ -114,7 +116,7 @@ public class MRota {
                     @Override
                     public void onResponse(ArrayList<MPassageiroDistancia> response) {
                         cRota.lstPassageirosDistancias = response;
-                        cRota.calcularMelhorRota();
+                        cRota.calcularMelhorRota(cr, mProgressDialog);
                     }
                 },
                 new Response.ErrorListener() {

@@ -1,9 +1,12 @@
 package fgv.Controller;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +18,7 @@ import android.widget.PopupMenu;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.vision.MultiProcessor;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -86,22 +90,22 @@ public class CRota extends Activity {
             public void onClick(View v){
                 CRota cr = new CRota();
                 mprogressDialog = ProgressDialog.show(CRota.this, "Aguarde", "Calculando melhores rotas...");
-                cr.getDistancias(lstPassageiros, getBaseContext());
+                cr.getDistancias(lstPassageiros, getBaseContext(), CRota.this, mprogressDialog);
             }
         });
 
     }
 
 
-    public void getDistancias(ArrayList<MPassageiro> lstPassageiros, Context context){
+    public void getDistancias(ArrayList<MPassageiro> lstPassageiros, Context context, CRota cr, ProgressDialog mProgressDialog){
         this.lstPassageiros = lstPassageiros;
         this.context = context;
         //carrega as distancias entre passageiros
         if(lstPassageirosDistancias == null || lstPassageirosDistancias.size() == 0)
-            getPassageirosDistancias(lstPassageiros, context);
+            getPassageirosDistancias(lstPassageiros, context, cr, mProgressDialog);
     }
 
-    public void calcularMelhorRota(){
+    public void calcularMelhorRota(CRota cr, ProgressDialog mProgressDialog){
         populacao = new ArrayList<MRota>();
 //        for (int i = 0; i < _QTDEXECUCOES; i++) {
 //            populacao = executaAg(lstPassageiros, populacao, context);
@@ -111,7 +115,28 @@ public class CRota extends Activity {
         }
 
         try {
-            Intent iMapa = new Intent(CRota.this, CMapa.class);
+            //encerra progress dialog
+            mProgressDialog.dismiss();
+
+//            Fragment TargetFragment = new Fragment();
+//            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//            transaction.replace(R.id.map,TargetFragment);
+//            transaction.addToBackStack(null);
+//            transaction.commit();
+
+            // Create a Uri from an intent string. Use the result to create an Intent.
+//            Uri gmmIntentUri = Uri.parse("google.streetview:cbll=46.414382,10.013988");
+//
+//            // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+//            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+//            // Make the Intent explicit by setting the Google Maps package
+//            mapIntent.setPackage("com.google.android.apps.maps");
+//
+//            // Attempt to start an activity that can handle the Intent
+//            startActivity(mapIntent);
+            Intent iMapa = new Intent();
+            iMapa = new Intent(cr, CMapa.class);
+            //Intent iMapa = new Intent(CRota.this, CMapa.class);
             iMapa.putExtra("rota",
                     (new Gson()).toJson(populacao.get(0))
             );
@@ -122,8 +147,7 @@ public class CRota extends Activity {
         }
 
 
-        //encerra progress dialog
-        //mprogressDialog.dismiss();
+
 //        CMapa cm = new CMapa();
 //        cm.desenharRota(populacao.get(0));
 
@@ -189,6 +213,7 @@ public class CRota extends Activity {
                         }
                         contador++;
                     }
+                    //TODO: Adicionar destino
                     newRota.setPassageiros(passageirosNewRota);
                     newRota.setFitnessRota(calcularFitnessRota(newRota));
                     populacao.add(newRota);
@@ -205,7 +230,6 @@ public class CRota extends Activity {
                 populacao = populacaoOld;
             }
 
-            //TODO: O crossover eh so uma vez, e nao um for!!confirmar no curso
             for(int i = 0; i <= ((_SIZEPOPULACAO/2)); i++)
             {
                 //Selecionar os pais para cruzamento
@@ -234,8 +258,8 @@ public class CRota extends Activity {
                 //3 - Converter o resultado para uma rota
 
                 //pegar arrays de int criado pelo pmx
-                pai = filhos.get_offspring1();
-                mae = filhos.get_offspring2();
+                pai = filhos.get_offspring2();
+                mae = filhos.get_offspring1();
 
                 MPassageiro mp = new MPassageiro();
                 ArrayList<MPassageiro> lstPassageirosPai = new ArrayList<MPassageiro>();
@@ -284,9 +308,9 @@ public class CRota extends Activity {
             popAux = null;
 
             //aplicar o 2opt
-            for (int j = 0; j < novaPopulacao.size(); j++){
-                novaPopulacao.get(j).setPassageiros(twoOpt(novaPopulacao.get(j).getPassageiros()));
-            }
+//            for (int j = 0; j < novaPopulacao.size(); j++){
+//                novaPopulacao.get(j).setPassageiros(twoOpt(novaPopulacao.get(j).getPassageiros()));
+//            }
 
             //Re-Avaliar a populacao
             atualizarValores(novaPopulacao);
@@ -489,7 +513,7 @@ public class CRota extends Activity {
         return -1;
     }
 
-    private void getPassageirosDistancias(ArrayList<MPassageiro> lstPassageiros, Context context){
+    private void getPassageirosDistancias(ArrayList<MPassageiro> lstPassageiros, Context context, CRota cr, ProgressDialog mProgressDialog){
         MRota rotaModel = new MRota();
         rq = Volley.newRequestQueue(context);
 
@@ -505,12 +529,31 @@ public class CRota extends Activity {
         params.put("json", js.toString());
 
         String url = "https://bestrouteapi.azurewebsites.net/Api/Mobile/GetPassageirosDistancias";
-        rotaModel.getPassageiroDistancia(rq, context, this, params, url);
+        rotaModel.getPassageiroDistancia(rq, context, this, params, url, cr, mProgressDialog);
     }
 
     public void atualizarValores(ArrayList<MRota> pop)
     {
+        int indexPass;
         for (int i = 0; i < pop.size(); i++){
+
+            //fitness dos passageiros
+            for (int j = 0; j < pop.get(i).getPassageiros().size(); j++){
+                if(j == pop.get(i).getPassageiros().size() - 1){
+                    indexPass = j;
+                    pop.get(i).getPassageiros().get(indexPass).setFitness(
+                            calcularFitness(pop.get(i).getPassageiros().get(indexPass).getId(), 2,false)
+                    );
+                }
+                else if(j >= 1){
+                    indexPass = j-1;
+                    pop.get(i).getPassageiros().get(indexPass).setFitness(
+                            calcularFitness(pop.get(i).getPassageiros().get(indexPass).getId(),
+                                    pop.get(i).getPassageiros().get(j).getId(),false)
+                    );
+                }
+            }
+
             pop.get(i).setFitnessRota(calcularFitnessRota(pop.get(i)));
         }
         //CalcularFitnessPercent;
