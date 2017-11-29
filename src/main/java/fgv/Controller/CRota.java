@@ -50,8 +50,8 @@ public class CRota extends Activity {
     public ArrayList<MPassageiroDistancia> lstPassageirosDistancias = new ArrayList<MPassageiroDistancia>();
     private RequestQueue rq;
     private int _SIZEPOPULACAO = 0;
-    private int _TAXAMUTACAO = 5;
-    private int _QTDEXECUCOES = 5;
+    private int _TAXAMUTACAO = 10;
+    private int _QTDEXECUCOES;
     private Context context;
     CPassageiro cp = new CPassageiro();
     private ProgressDialog mprogressDialog;
@@ -107,13 +107,11 @@ public class CRota extends Activity {
     }
 
     public void calcularMelhorRota(Context ctx, ProgressDialog mProgressDialog){
+        _QTDEXECUCOES = 300;
         populacao = new ArrayList<MRota>();
         for (int i = 0; i < _QTDEXECUCOES; i++) {
             populacao = executaAg(lstPassageiros, populacao, context);
         }
-//        for (int i = 0; i < 1; i++) {
-//            populacao = executaAg(lstPassageiros, populacao, context);
-//        }
 
         try {
             //encerra progress dialog
@@ -127,16 +125,6 @@ public class CRota extends Activity {
         catch (Exception ex){
             ex.getMessage();
         }
-
-
-
-//        CMapa cm = new CMapa();
-//        cm.desenharRota(populacao.get(0));
-
-//        String passageirosIds = "";
-//        for(int j = 0; j < populacao.size(); j++){
-//            passageirosIds = String.valueOf(populacao.get(j).getPassageiros().get(j).getId()) + ";";
-//        }
 
     }
 
@@ -152,7 +140,7 @@ public class CRota extends Activity {
         int contador = 0;
 
         try {
-            _SIZEPOPULACAO = 15;
+            _SIZEPOPULACAO = lstPassageiros.size();
 
             //----------Executa o AG para calcular a melhor rota----------------
 
@@ -408,7 +396,7 @@ public class CRota extends Activity {
     {
         double numSorteado = (numeroAleatorio(0,100));
 
-        for(int i = 0; i < pop.size() -1; i++){
+        for(int i = 0; i < pop.size(); i++){
             if(numSorteado >= pop.get(i).getRangeRoleta()[0] && numSorteado <= pop.get(i).getRangeRoleta()[1])
             {
                 return pop.get(i);
@@ -447,20 +435,14 @@ public class CRota extends Activity {
         while (modified) {
             modified = false;
 
-            for (int i = 0; i < passageiros.size(); i++) {
-                for (int j = i+2; j+1 < passageiros.size(); j++) {
+            for (int i = 0; i < passageiros.size()-1; i++) {
+                for (int j = i+2; j+1 < passageiros.size()-1; j++) {
 
                     double d1 = calcularFitness(passageiros.get(i).getId(),passageiros.get(i+1).getId(), false) +
                             calcularFitness(passageiros.get(j).getId(), passageiros.get(j+1).getId(), false);
 
                     double d2 = calcularFitness(passageiros.get(i).getId(),passageiros.get(j).getId(), false) +
                             calcularFitness(passageiros.get(i+1).getId(), passageiros.get(j+1).getId(), false);
-
-//                    double d1 = distanceTable.getDistanceBetween(tour.get(i), tour.get(i+1)) +
-//                            distanceTable.getDistanceBetween(tour.get(j), tour.get(j+1));
-//                    double d2 = distanceTable.getDistanceBetween(tour.get(i), tour.get(j)) +
-//                            distanceTable.getDistanceBetween(tour.get(i+1), tour.get(j+1));
-
 
                     // Ajusta caso a distancia possa ser encurtada
                     if (d2 < d1) {

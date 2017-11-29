@@ -64,6 +64,7 @@ public class CMapa extends FragmentActivity implements OnMapReadyCallback {
                 if(i + 1 == rota.getPassageiros().size()){
                     mMap.addMarker(new MarkerOptions().position(marcador).title(rota.getPassageiros().get(i).getNome())
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+
                 }
                 else if(i == 0){
                     mMap.addMarker(new MarkerOptions().position(marcador).title(rota.getPassageiros().get(i).getNome())
@@ -82,10 +83,10 @@ public class CMapa extends FragmentActivity implements OnMapReadyCallback {
                             // Latitude, Longitude de Destino
                             rota.getPassageiros().get(i + 1).getLatitude(),rota.getPassageiros().get(i+1).getLongitude());
                 }
-
-                //polyline.add(marcador);
             }
-            //mMap.addPolyline(polyline);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
+                rota.getPassageiros().get(rota.getPassageiros().size()-1).getLatitude(),
+                    rota.getPassageiros().get(rota.getPassageiros().size()-1).getLongitude()), 12.0f));
 
         }
         catch (Exception ex){

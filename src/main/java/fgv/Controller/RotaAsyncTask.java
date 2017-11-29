@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -58,6 +59,9 @@ public class RotaAsyncTask extends
         }
 
         mapView.addPolyline(options);
+//        mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
+//                rota.getPoints().get(rota.getPoints().size()-1).latitude,
+//                rota.getPoints().get(rota.getPoints().size()-1).longitude), 12.0f));
     }
 
     private int getColor(){
