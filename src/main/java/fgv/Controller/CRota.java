@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -50,11 +51,12 @@ public class CRota extends Activity {
     private RequestQueue rq;
     private int _SIZEPOPULACAO = 0;
     private int _TAXAMUTACAO = 5;
-    private int _QTDEXECUCOES = 30;
+    private int _QTDEXECUCOES = 5;
     private Context context;
     CPassageiro cp = new CPassageiro();
     private ProgressDialog mprogressDialog;
     public Button btCalcularMelhorRota;
+    MPassageiro passageiroFatec = new MPassageiro("Fatec Ipiranga", -23.609310, -46.607653);
 
     public ArrayList<MPassageiro> lstPassageiros = new ArrayList<MPassageiro>();
 
@@ -64,7 +66,6 @@ public class CRota extends Activity {
 
     public MRota consultarRota(){
         MRota rota = new MRota();
-
         return rota;
     }
 
@@ -105,42 +106,23 @@ public class CRota extends Activity {
             getPassageirosDistancias(lstPassageiros, context, cr, mProgressDialog);
     }
 
-    public void calcularMelhorRota(CRota cr, ProgressDialog mProgressDialog){
+    public void calcularMelhorRota(Context ctx, ProgressDialog mProgressDialog){
         populacao = new ArrayList<MRota>();
-//        for (int i = 0; i < _QTDEXECUCOES; i++) {
-//            populacao = executaAg(lstPassageiros, populacao, context);
-//        }
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < _QTDEXECUCOES; i++) {
             populacao = executaAg(lstPassageiros, populacao, context);
         }
+//        for (int i = 0; i < 1; i++) {
+//            populacao = executaAg(lstPassageiros, populacao, context);
+//        }
 
         try {
             //encerra progress dialog
             mProgressDialog.dismiss();
-
-//            Fragment TargetFragment = new Fragment();
-//            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//            transaction.replace(R.id.map,TargetFragment);
-//            transaction.addToBackStack(null);
-//            transaction.commit();
-
-            // Create a Uri from an intent string. Use the result to create an Intent.
-//            Uri gmmIntentUri = Uri.parse("google.streetview:cbll=46.414382,10.013988");
-//
-//            // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
-//            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-//            // Make the Intent explicit by setting the Google Maps package
-//            mapIntent.setPackage("com.google.android.apps.maps");
-//
-//            // Attempt to start an activity that can handle the Intent
-//            startActivity(mapIntent);
-            Intent iMapa = new Intent();
-            iMapa = new Intent(cr, CMapa.class);
-            //Intent iMapa = new Intent(CRota.this, CMapa.class);
+            Intent iMapa = new Intent(ctx, CMapa.class);
             iMapa.putExtra("rota",
                     (new Gson()).toJson(populacao.get(0))
             );
-            startActivity(iMapa);
+            ctx.startActivity(iMapa);
         }
         catch (Exception ex){
             ex.getMessage();
@@ -199,7 +181,6 @@ public class CRota extends Activity {
                         //calcula fitness local do passageiro anterior, pois o fitness eh a distancia ate o proximo ponto
                         if(passageirosNewRota.size() == lstPassageiros.size()){
                             indexPass = passageirosNewRota.size()-1;
-                            //TODO: Testar quando for pro destino
                             passageirosNewRota.get(indexPass).setFitness(
                                     calcularFitness(passageirosNewRota.get(indexPass).getId(),2,true)
                             );
@@ -213,8 +194,9 @@ public class CRota extends Activity {
                         }
                         contador++;
                     }
-                    //TODO: Adicionar destino
                     newRota.setPassageiros(passageirosNewRota);
+                    //Adicionar destino
+                    newRota.getPassageiros().add(passageiroFatec);
                     newRota.setFitnessRota(calcularFitnessRota(newRota));
                     populacao.add(newRota);
                     newRota = new MRota();
@@ -240,15 +222,15 @@ public class CRota extends Activity {
 //                MRota maeAux = Roleta(populacaoOld);
 
                 //1 - criar array de int, com os ids dos passageiros
-                int [] pai = new int [paiAux.getPassageiros().size()] ;
-                int [] mae = new int [maeAux.getPassageiros().size()];
+                int [] pai = new int [paiAux.getPassageiros().size() -1] ;
+                int [] mae = new int [maeAux.getPassageiros().size() -1];
                 int count;
 
-                for (count = 0; count < paiAux.getPassageiros().size();count++){
+                for (count = 0; count < paiAux.getPassageiros().size() -1;count++){
                     pai[count] = paiAux.getPassageiros().get(count).getId();
                 }
 
-                for (count = 0; count < maeAux.getPassageiros().size();count++){
+                for (count = 0; count < maeAux.getPassageiros().size()-1;count++){
                     mae[count] = maeAux.getPassageiros().get(count).getId();
                 }
 
@@ -273,6 +255,10 @@ public class CRota extends Activity {
                             getIndexPassageiroPorId(lstPassageiros, mae[count])));
                 }
 
+                //Adiciona o Destino
+                lstPassageirosPai.add(passageiroFatec);
+                lstPassageirosMae.add(passageiroFatec);
+
                 paiAux.setPassageiros(lstPassageirosPai);
                 maeAux.setPassageiros(lstPassageirosMae);
 
@@ -286,14 +272,6 @@ public class CRota extends Activity {
                 MRota filhoB = new MRota();
                 filhoB.setPassageiros(maeAux.getPassageiros());
 
-//                //calcular fitness individuais
-//                calcularFitnessLocais(filhoA.getPassageiros());
-//                calcularFitnessLocais(filhoB.getPassageiros());
-//
-//                //calcular fitness das rotas
-//                calcularFitnessRota(filhoA);
-//                calcularFitnessRota(filhoB);
-
                 popAux.add(filhoA);
                 popAux.add(filhoB);
             }
@@ -301,16 +279,16 @@ public class CRota extends Activity {
             //Apagar os velhos membros
             //Inserir novos Membros
 
-            for(int i = 0; i < _SIZEPOPULACAO; i++)
+            for(int i = 0; i < _SIZEPOPULACAO+1; i++)
             {
                 novaPopulacao.add(popAux.get(i));
             }
             popAux = null;
 
             //aplicar o 2opt
-//            for (int j = 0; j < novaPopulacao.size(); j++){
-//                novaPopulacao.get(j).setPassageiros(twoOpt(novaPopulacao.get(j).getPassageiros()));
-//            }
+            for (int j = 0; j < novaPopulacao.size()-1; j++){
+                novaPopulacao.get(j).setPassageiros(twoOpt(novaPopulacao.get(j).getPassageiros()));
+            }
 
             //Re-Avaliar a populacao
             atualizarValores(novaPopulacao);
@@ -430,7 +408,7 @@ public class CRota extends Activity {
     {
         double numSorteado = (numeroAleatorio(0,100));
 
-        for(int i = 0; i < pop.size(); i++){
+        for(int i = 0; i < pop.size() -1; i++){
             if(numSorteado >= pop.get(i).getRangeRoleta()[0] && numSorteado <= pop.get(i).getRangeRoleta()[1])
             {
                 return pop.get(i);
@@ -538,7 +516,7 @@ public class CRota extends Activity {
         for (int i = 0; i < pop.size(); i++){
 
             //fitness dos passageiros
-            for (int j = 0; j < pop.get(i).getPassageiros().size(); j++){
+            for (int j = 0; j < pop.get(i).getPassageiros().size()-1; j++){
                 if(j == pop.get(i).getPassageiros().size() - 1){
                     indexPass = j;
                     pop.get(i).getPassageiros().get(indexPass).setFitness(

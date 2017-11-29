@@ -7,8 +7,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -38,10 +41,9 @@ public class CMapa extends FragmentActivity implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        mMap = googleMap;
         desenharRota(rota);
 
-//        mMap = googleMap;
 //
 //        // Add a marker in Fatec, Sao Paulo, and move the camera.
 //        LatLng fatec = new LatLng(-23.609182, -46.607663);
@@ -51,12 +53,43 @@ public class CMapa extends FragmentActivity implements OnMapReadyCallback {
 
     private void desenharRota(MRota rota){
 
-        LatLng marcador;
-        for (int i = 0; i < rota.getPassageiros().size(); i++){
-            marcador = new LatLng(rota.getPassageiros().get(i).getLatitude(),
-                    rota.getPassageiros().get(i).getLongitude());
+        LatLng marcador = null;
+        GoogleAPI gApi = new GoogleAPI(new CPassageiro());
 
-            mMap.addMarker(new MarkerOptions().position(marcador).title(rota.getPassageiros().get(i).getNome()));
+        PolylineOptions polyline = new PolylineOptions();
+        try {
+            for (int i = 0; i < rota.getPassageiros().size(); i++){
+                marcador = new LatLng(rota.getPassageiros().get(i).getLatitude(),
+                        rota.getPassageiros().get(i).getLongitude());
+                if(i + 1 == rota.getPassageiros().size()){
+                    mMap.addMarker(new MarkerOptions().position(marcador).title(rota.getPassageiros().get(i).getNome())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                }
+                else if(i == 0){
+                    mMap.addMarker(new MarkerOptions().position(marcador).title(rota.getPassageiros().get(i).getNome())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                    new RotaAsyncTask(this, mMap).execute(
+                            // Latitude, Logintude de Origem
+                            marcador.latitude, marcador.longitude,
+                            // Latitude, Longitude de Destino
+                            rota.getPassageiros().get(i + 1).getLatitude(),rota.getPassageiros().get(i+1).getLongitude());
+                }
+                else{
+                    mMap.addMarker(new MarkerOptions().position(marcador).title(rota.getPassageiros().get(i).getNome()));
+                    new RotaAsyncTask(this, mMap).execute(
+                            // Latitude, Logintude de Origem
+                            marcador.latitude, marcador.longitude,
+                            // Latitude, Longitude de Destino
+                            rota.getPassageiros().get(i + 1).getLatitude(),rota.getPassageiros().get(i+1).getLongitude());
+                }
+
+                //polyline.add(marcador);
+            }
+            //mMap.addPolyline(polyline);
+
+        }
+        catch (Exception ex){
+            ex.getMessage();
         }
     }
 }

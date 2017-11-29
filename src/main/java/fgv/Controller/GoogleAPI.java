@@ -156,6 +156,9 @@ public class GoogleAPI implements GoogleApiClient.ConnectionCallbacks,
 
         StringWriter retornoTempo = new StringWriter();
         try {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+
             String stringUrl = "https://maps.google.com/maps/api/directions/json?";
             stringUrl += "origin=" + latLong;
             stringUrl += "&destination=" + destino;
@@ -187,6 +190,72 @@ public class GoogleAPI implements GoogleApiClient.ConnectionCallbacks,
             return "erro: " + e.getMessage();
         }
     }
+
+//    public void drawPath(String result) {
+//        if (line != null) {
+//            myMap.clear();
+//        }
+//        myMap.addMarker(new MarkerOptions().position(endLatLng).icon(
+//                BitmapDescriptorFactory.fromResource(R.drawable.redpin_marker)));
+//        myMap.addMarker(new MarkerOptions().position(startLatLng).icon(
+//                BitmapDescriptorFactory.fromResource(R.drawable.redpin_marker)));
+//        try {
+//            // Tranform the string into a json object
+//            final JSONObject json = new JSONObject(result);
+//            JSONArray routeArray = json.getJSONArray("routes");
+//            JSONObject routes = routeArray.getJSONObject(0);
+//            JSONObject overviewPolylines = routes
+//                    .getJSONObject("overview_polyline");
+//            String encodedString = overviewPolylines.getString("points");
+//            ArrayList<LatLng> list = decodePoly(encodedString);
+//
+//            for (int z = 0; z < list.size() - 1; z++) {
+//                LatLng src = list.get(z);
+//                LatLng dest = list.get(z + 1);
+//                line = myMap.addPolyline(new PolylineOptions()
+//                        .add(new LatLng(src.latitude, src.longitude),
+//                                new LatLng(dest.latitude, dest.longitude))
+//                        .width(5).color(Color.BLUE).geodesic(true));
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private ArrayList<LatLng> decodePoly(String encoded) {
+//
+//        ArrayList<LatLng> poly = new ArrayList<LatLng>();
+//        int index = 0, len = encoded.length();
+//        int lat = 0, lng = 0;
+//
+//        while (index < len) {
+//            int b, shift = 0, result = 0;
+//            do {
+//                b = encoded.charAt(index++) - 63;
+//                result |= (b & 0x1f) << shift;
+//                shift += 5;
+//            } while (b >= 0x20);
+//            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+//            lat += dlat;
+//
+//            shift = 0;
+//            result = 0;
+//            do {
+//                b = encoded.charAt(index++) - 63;
+//                result |= (b & 0x1f) << shift;
+//                shift += 5;
+//            } while (b >= 0x20);
+//            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+//            lng += dlng;
+//
+//            LatLng p = new LatLng((((double) lat / 1E5)),
+//                    (((double) lng / 1E5)));
+//            poly.add(p);
+//        }
+//
+//        return poly;
+//    }
 
     public String identificarDistanciaProximoDestino(String latLong, String destino){
 

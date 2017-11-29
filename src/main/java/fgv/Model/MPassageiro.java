@@ -26,6 +26,13 @@ import fgv.Controller.CRota;
 
 public class MPassageiro{
 
+    public MPassageiro(){}
+
+    public MPassageiro(String nome, double lat, double lng){
+        setNome(nome);
+        setLatitude(lat);
+        setLongitude(lng);
+    }
 
     private int Id;
 
