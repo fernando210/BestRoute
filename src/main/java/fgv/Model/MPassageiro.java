@@ -62,7 +62,7 @@ public class MPassageiro{
 
     private int Ativo;
 
-    private double fitness;                             // chromosome fitness //
+    private double fitness;
 
     public double getFitness(){
         return fitness;
@@ -184,7 +184,7 @@ public class MPassageiro{
         this.TelefoneResponsavel = telefoneResponsavel;
     }
 
-    public boolean inserirPassageiroVolley(RequestQueue rq, final Context contexto, final Map<String,String> params, String url) {
+    public boolean inserirPassageiro(RequestQueue rq, final Context contexto, final Map<String,String> params, String url) {
 
         CustomJsonObjectRequest cjor = new CustomJsonObjectRequest(Request.Method.POST,
             url,
@@ -294,16 +294,6 @@ public class MPassageiro{
     public ArrayList<MPassageiro> selecionarPassageiros(){
         ArrayList<MPassageiro> passageiros = new ArrayList<MPassageiro>();
         return passageiros;
-    }
-
-    public void excluirPassageiro(){
-
-    }
-
-    public MPassageiro consultarPassageiro(String nome){
-        //setPassageiroDao();
-        return new MPassageiro();
-        //return passageiroDao.consultarPassageiro(nome);
     }
 
 }

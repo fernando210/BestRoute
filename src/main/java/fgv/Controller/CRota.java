@@ -15,7 +15,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -49,8 +51,8 @@ public class CRota extends Activity {
     private ArrayList<MRota> populacao;
     public ArrayList<MPassageiroDistancia> lstPassageirosDistancias = new ArrayList<MPassageiroDistancia>();
     private RequestQueue rq;
-    private int _SIZEPOPULACAO = 0;
-    private int _TAXAMUTACAO = 10;
+    private int _SIZEPOPULACAO;
+    private int _TAXAMUTACAO;
     private int _QTDEXECUCOES;
     private Context context;
     CPassageiro cp = new CPassageiro();
@@ -58,15 +60,13 @@ public class CRota extends Activity {
     public Button btCalcularMelhorRota;
     MPassageiro passageiroFatec = new MPassageiro("Fatec Ipiranga", -23.609310, -46.607653);
 
+    private EditText edQtdExecucao;
+    private EditText edTaxaMutacao;
+
     public ArrayList<MPassageiro> lstPassageiros = new ArrayList<MPassageiro>();
 
     public CRota(){
         populacao = new ArrayList<MRota>();
-    }
-
-    public MRota consultarRota(){
-        MRota rota = new MRota();
-        return rota;
     }
 
     @Override
@@ -86,10 +86,17 @@ public class CRota extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rota);
 
+        edQtdExecucao = (EditText) findViewById(R.id.edQtdExecucao);
+        edTaxaMutacao = (EditText) findViewById(R.id.edTaxaMutacao);
+
         btCalcularMelhorRota = (Button) findViewById(R.id.btCalcularMelhorRota);
         btCalcularMelhorRota.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                _QTDEXECUCOES = Integer.parseInt(edQtdExecucao.getText().toString());
+                _TAXAMUTACAO = Integer.parseInt(edTaxaMutacao.getText().toString());
                 CRota cr = new CRota();
+                cr._QTDEXECUCOES = _QTDEXECUCOES;
+                cr._TAXAMUTACAO = _TAXAMUTACAO;
                 mprogressDialog = ProgressDialog.show(CRota.this, "Aguarde", "Calculando melhores rotas...");
                 cr.getDistancias(lstPassageiros, getBaseContext(), CRota.this, mprogressDialog);
             }
@@ -107,15 +114,16 @@ public class CRota extends Activity {
     }
 
     public void calcularMelhorRota(Context ctx, ProgressDialog mProgressDialog){
-        _QTDEXECUCOES = 300;
+
         populacao = new ArrayList<MRota>();
         for (int i = 0; i < _QTDEXECUCOES; i++) {
-            populacao = executaAg(lstPassageiros, populacao, context);
+            populacao = calcularMelhorRota(lstPassageiros, populacao, context);
         }
 
         try {
             //encerra progress dialog
             mProgressDialog.dismiss();
+            Toast.makeText(ctx,"fitness da rota:" + populacao.get(0).getFitnessRota(),Toast.LENGTH_LONG).show();
             Intent iMapa = new Intent(ctx, CMapa.class);
             iMapa.putExtra("rota",
                     (new Gson()).toJson(populacao.get(0))
@@ -128,7 +136,7 @@ public class CRota extends Activity {
 
     }
 
-    private ArrayList<MRota> executaAg(ArrayList<MPassageiro> lstPassageiros, ArrayList<MRota> populacaoOld, Context context){
+    private ArrayList<MRota> calcularMelhorRota(ArrayList<MPassageiro> lstPassageiros, ArrayList<MRota> populacaoOld, Context context){
         ArrayList<MRota> popAux = new ArrayList<MRota>();
         ArrayList<MRota> novaPopulacao = new ArrayList<MRota>();
         String passInseridos = "";
@@ -141,8 +149,6 @@ public class CRota extends Activity {
 
         try {
             _SIZEPOPULACAO = lstPassageiros.size();
-
-            //----------Executa o AG para calcular a melhor rota----------------
 
             //primeiro passo: criacao da populacao e calculo de fitness individual
             //CRIAÇÃO ALEATÓRIA DE POPULAÇÃO INICIAL
@@ -200,12 +206,16 @@ public class CRota extends Activity {
                 populacao = populacaoOld;
             }
 
+//            MRota paiOriginal;
+//            MRota maeOriginal;
             for(int i = 0; i <= ((_SIZEPOPULACAO/2)); i++)
             {
                 //Selecionar os pais para cruzamento
-                //pq que as variavies de mrota tao vazias?
-                MRota paiAux = Roleta(populacao);
-                MRota maeAux = Roleta(populacao);
+                MRota paiAux = roleta(populacao);
+                MRota maeAux = roleta(populacao);
+
+//                paiOriginal = paiAux;
+//                maeOriginal = maeAux;
 //                MRota paiAux = Roleta(populacaoOld);
 //                MRota maeAux = Roleta(populacaoOld);
 
@@ -260,6 +270,33 @@ public class CRota extends Activity {
                 MRota filhoB = new MRota();
                 filhoB.setPassageiros(maeAux.getPassageiros());
 
+//                ArrayList<MRota>pop = new ArrayList<MRota>();
+//                pop.add(filhoA);
+//                pop.add(filhoB);
+
+//                for (int k = 0; k < 2; k++){
+//                    //fitness dos passageiros
+//                    for (int j = 0; j < pop.get(k).getPassageiros().size()-1; j++){
+//                        if(j == pop.get(k).getPassageiros().size() - 1){
+//                            indexPass = j;
+//                            pop.get(k).getPassageiros().get(indexPass).setFitness(
+//                                    calcularFitness(pop.get(k).getPassageiros().get(indexPass).getId(), 2,false)
+//                            );
+//                        }
+//                        else if(j >= 1){
+//                            indexPass = j-1;
+//                            pop.get(k).getPassageiros().get(indexPass).setFitness(
+//                                    calcularFitness(pop.get(k).getPassageiros().get(indexPass).getId(),
+//                                            pop.get(k).getPassageiros().get(j).getId(),false)
+//                            );
+//                        }
+//                    }
+//
+//                    pop.get(k).setFitnessRota(calcularFitnessRota(pop.get(k)));
+//                }
+//                popAux.add(pop.get(0).getFitnessRota() < paiOriginal.getFitnessRota() ?  pop.get(0): paiOriginal);
+//                popAux.add(pop.get(1).getFitnessRota() < maeOriginal.getFitnessRota() ? pop.get(1) : maeOriginal);
+
                 popAux.add(filhoA);
                 popAux.add(filhoB);
             }
@@ -280,17 +317,16 @@ public class CRota extends Activity {
 
             //Re-Avaliar a populacao
             atualizarValores(novaPopulacao);
-
             return novaPopulacao;
 
         }
         catch(Exception e){
+            e.getMessage();
             return populacao;
         }
     }
 
     public double calcularFitness(int passageiroInicial, int passageiroFinal, boolean isDestino){
-
         if(!isDestino){
             for (int j = 0; j < lstPassageirosDistancias.size(); j++){
                 if(lstPassageirosDistancias.get(j).getIdPassageiroInicio() == passageiroInicial &&
@@ -306,22 +342,6 @@ public class CRota extends Activity {
             }
         }
         return -1;
-    }
-
-    public void calcularFitnessLocais(ArrayList<MPassageiro> passageiros){
-        for (int i = 0; i < passageiros.size(); i++){
-            if(i == passageiros.size()){
-                passageiros.get(i).setFitness(
-                        calcularFitness(passageiros.get(i).getId(),2, true)
-                );
-            }
-            else if(passageiros.size() > 1){
-                passageiros.get(i).setFitness(
-                        calcularFitness(passageiros.get(i).getId(),
-                                passageiros.get(passageiros.size()-1).getId(),false)
-                );
-            }
-        }
     }
 
     public double calcularFitnessRota(MRota rota){
@@ -351,7 +371,6 @@ public class CRota extends Activity {
     public void calcularRangeRoleta(ArrayList<MRota> pop)
     {
         //Primeiramente deve-se ordenar a populacao em ordem crescente
-        //Chamar o metodo para ordenar a populacao
         ordenarPopulacao(pop);
         double somatoria = 0;
 
@@ -376,7 +395,6 @@ public class CRota extends Activity {
 
     public void ordenarPopulacao(ArrayList<MRota> pop){
         MRota aux = new MRota();
-
         for (int i = 0; i < _SIZEPOPULACAO; i++)
         {
             for (int j = 0; j < _SIZEPOPULACAO; j++)
@@ -389,13 +407,10 @@ public class CRota extends Activity {
                 }
             }
         }
-
     }
 
-    public MRota Roleta(ArrayList<MRota> pop)
-    {
-        double numSorteado = (numeroAleatorio(0,100));
-
+    public MRota roleta(ArrayList<MRota> pop){
+        double numSorteado = (gerarNumeroAleatorio(0,100));
         for(int i = 0; i < pop.size(); i++){
             if(numSorteado >= pop.get(i).getRangeRoleta()[0] && numSorteado <= pop.get(i).getRangeRoleta()[1])
             {
@@ -406,11 +421,10 @@ public class CRota extends Activity {
         return null;
     }
 
-    public MRota ExchangeMutation(MRota rota)
-    {
-        if(numeroAleatorio(0,100)  <= _TAXAMUTACAO){
-            int primeiroRandom = numeroAleatorio(0,_SIZEPOPULACAO);
-            int segundoRandom = numeroAleatorio(0,_SIZEPOPULACAO);
+    public MRota ExchangeMutation(MRota rota){
+        if(gerarNumeroAleatorio(0,100)  <= _TAXAMUTACAO){
+            int primeiroRandom = gerarNumeroAleatorio(0,_SIZEPOPULACAO -1);
+            int segundoRandom = gerarNumeroAleatorio(0,_SIZEPOPULACAO -1);
 
             MPassageiro mutacao1 = rota.getPassageiros().get(primeiroRandom);
             rota.getPassageiros().set(primeiroRandom, rota.getPassageiros().get(segundoRandom));
@@ -419,21 +433,20 @@ public class CRota extends Activity {
         return rota;
     }
 
-    public int numeroAleatorio(int min, int max){
+    public int gerarNumeroAleatorio(int min, int max){
         Random rand = new Random();
         int randomNum = rand.nextInt((max - min) + 1) + min;
         return randomNum;
     }
 
     private ArrayList<MPassageiro> twoOpt(ArrayList<MPassageiro> passageiros){
-
-        boolean modified = true;
+        boolean modificado = true;
         //se tiver menos de 4 passageiros nao precisa aplicar esse algoritmo
         if(passageiros.size() < 4)
             return passageiros;
 
-        while (modified) {
-            modified = false;
+        while (modificado) {
+            modificado = false;
 
             for (int i = 0; i < passageiros.size()-1; i++) {
                 for (int j = i+2; j+1 < passageiros.size()-1; j++) {
@@ -447,8 +460,7 @@ public class CRota extends Activity {
                     // Ajusta caso a distancia possa ser encurtada
                     if (d2 < d1) {
                         passageiros = trocarPosicoes(passageiros, i+1,j);
-//                        tour.reverse(i+1, j);
-                        modified = true;
+                        modificado = true;
                     }
                 }
             }
@@ -496,7 +508,6 @@ public class CRota extends Activity {
     {
         int indexPass;
         for (int i = 0; i < pop.size(); i++){
-
             //fitness dos passageiros
             for (int j = 0; j < pop.get(i).getPassageiros().size()-1; j++){
                 if(j == pop.get(i).getPassageiros().size() - 1){
@@ -513,7 +524,6 @@ public class CRota extends Activity {
                     );
                 }
             }
-
             pop.get(i).setFitnessRota(calcularFitnessRota(pop.get(i)));
         }
         //CalcularFitnessPercent;
@@ -521,18 +531,9 @@ public class CRota extends Activity {
 
         //CalcularRangeRoleta
         calcularRangeRoleta(pop);
-
     }
 
     public void registrarMelhoresRotas(){
-
-    }
-
-    public void verificarMotoristaChegando(){
-
-    }
-
-    public void verificarTempoTrajeto(){
 
     }
 
@@ -541,22 +542,6 @@ public class CRota extends Activity {
     }
 
     public void executarRotaSelecionada(){
-
-    }
-
-    public void buscarPassageiro(){
-
-    }
-
-    public void confirmarEntregaDestino(){
-
-    }
-
-    public void confirmarBusca(){
-
-    }
-
-    public void confirmarEntregaCasa(){
 
     }
 

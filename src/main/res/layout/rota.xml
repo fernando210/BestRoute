@@ -23,6 +23,29 @@
             android:textSize="16sp" />
 
     </android.support.v7.widget.Toolbar>
+    <TextView
+        android:id="@+id/tvQtdExecucao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quantidade de execução" />
+
+    <EditText
+        android:id="@+id/edQtdExecucao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"></EditText>
+
+    <TextView
+        android:id="@+id/tvTaxaMutacao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Taxa de Mutação (%)" />
+
+    <EditText
+        android:id="@+id/edTaxaMutacao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"></EditText>
 
     <Button
         android:id="@+id/btCalcularMelhorRota"

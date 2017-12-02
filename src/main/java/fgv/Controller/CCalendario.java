@@ -2,6 +2,8 @@ package fgv.Controller;
 
 import java.util.Date;
 
+import fgv.Model.MPassageiro;
+
 /**
  * Created by Fernando on 16/01/2017.
  */
@@ -27,8 +29,8 @@ public class CCalendario {
         this.data = data;
     }
 
-    public void verificarComparecimento(){
-
+    public boolean verificarComparecimento(MPassageiro passageiro){
+        return false;
     }
 
     public void marcarData(){
@@ -38,4 +40,5 @@ public class CCalendario {
     public void desmarcarData(){
 
     }
+
 }

@@ -70,7 +70,6 @@ public class CPassageiro extends Activity implements Serializable {
         actvNome.setAdapter(passageirosAdapter);
 
         final Button btConsultarPassageiro = (Button) findViewById(R.id.btConsultarPassageiro);
-//        final Button btCalcularMelhorRota = (Button) findViewById(R.id.btCalcularMelhorRota);
 
         actvNome.addTextChangedListener(new TextWatcher() {
             @Override
@@ -112,53 +111,51 @@ public class CPassageiro extends Activity implements Serializable {
 
             public void onClick(View v){
                 Intent iCadastrarPassageiro = new Intent(CPassageiro.this, CCadastrarPassageiro.class);
-                //iCadastrarPassageiro.putExtra("lstPassageiros", (new Gson()).toJson(lstPassageiros));
-                //iCadastrarPassageiro.putExtra("passageirosAdapter", (new Gson()).toJson(passageirosAdapter));
                 startActivity(iCadastrarPassageiro);
             }
         });
     }
 
-    public void gerarDistancias(){
+//    public void gerarDistancias(){
+//
+//        String result ="";
+//        StringWriter st = new StringWriter();
+//        GoogleAPI gApi = new GoogleAPI(new CPassageiro());
+//
+//        String query = "";
+//
+//        //distancias entre passageiros
+//        for (int i = 0; i < lstPassageiros.size();i++){
+//            for (int j = 0; j < lstPassageiros.size();j++){
+//                result = gApi.identificarDistanciaProximoDestino(lstPassageiros.get(i).getLatitude().toString() + "," +
+//                        lstPassageiros.get(i).getLongitude().toString(),
+//                        lstPassageiros.get(j).getLatitude().toString() + "," +
+//                                lstPassageiros.get(j).getLongitude().toString());
+//
+//                query = "INSERT INTO TB_PASSAGEIRODISTANCIA VALUES(" +
+//                        lstPassageiros.get(i).getId() +
+//                        ", " + lstPassageiros.get(j).getId()+ ",null,'" + result + "')";
+//                st.append(query + "\n");
+//            }
+//        }
+//
+//        //destino
+//        String destino = "-23.609310,-46.607653";
+//        for (int i = 0; i < lstPassageiros.size();i++){
+//            result = gApi.identificarDistanciaProximoDestino(lstPassageiros.get(i).getLatitude().toString() + "," +
+//                            lstPassageiros.get(i).getLongitude().toString(),destino);
+//
+//            query = "INSERT INTO TB_PASSAGEIRODISTANCIA VALUES(" +
+//                    lstPassageiros.get(i).getId() +
+//                    ", null, 2, '" + result + "')";
+//            st.append(query + "\n");
+//
+//        }
+//
+//    }
 
-        String result ="";
-        StringWriter st = new StringWriter();
-        GoogleAPI gApi = new GoogleAPI(new CPassageiro());
 
-        String query = "";
-
-        //distancias entre passageiros
-        for (int i = 0; i < lstPassageiros.size();i++){
-            for (int j = 0; j < lstPassageiros.size();j++){
-                result = gApi.identificarDistanciaProximoDestino(lstPassageiros.get(i).getLatitude().toString() + "," +
-                        lstPassageiros.get(i).getLongitude().toString(),
-                        lstPassageiros.get(j).getLatitude().toString() + "," +
-                                lstPassageiros.get(j).getLongitude().toString());
-
-                query = "INSERT INTO TB_PASSAGEIRODISTANCIA VALUES(" +
-                        lstPassageiros.get(i).getId() +
-                        ", " + lstPassageiros.get(j).getId()+ ",null,'" + result + "')";
-                st.append(query + "\n");
-            }
-        }
-
-        //destino
-        String destino = "-23.609310,-46.607653";
-        for (int i = 0; i < lstPassageiros.size();i++){
-            result = gApi.identificarDistanciaProximoDestino(lstPassageiros.get(i).getLatitude().toString() + "," +
-                            lstPassageiros.get(i).getLongitude().toString(),destino);
-
-            query = "INSERT INTO TB_PASSAGEIRODISTANCIA VALUES(" +
-                    lstPassageiros.get(i).getId() +
-                    ", null, 2, '" + result + "')";
-            st.append(query + "\n");
-
-        }
-
-    }
-
-
-    public boolean inserirPassageiroVolley(RequestQueue rq, Context contexto, MPassageiro p){
+    public boolean inserirPassageiro(RequestQueue rq, Context contexto, MPassageiro p){
 
         Map<String,String> params;
         params = new HashMap<String,String>();
@@ -171,8 +168,7 @@ public class CPassageiro extends Activity implements Serializable {
         params.put("cidade", p.getCidade());
         params.put("estado", p.getEstado());
         params.put("bairro", p.getBairro());
-        //params.put("idDestino", "1");//TA CHUMBADO PRA TESTE!!!!!!
-        params.put("idMotorista", "1");//TA CHUMBADO PRA TESTE!!!!!!
+        params.put("idMotorista", "1");
         params.put("nomeResponsavel", p.getNomeResponsavel());
         params.put("telefoneResponsavel", p.getTelefoneResponsavel());
 
@@ -186,7 +182,7 @@ public class CPassageiro extends Activity implements Serializable {
 
         String url = "https://bestrouteapi.azurewebsites.net/Api/Mobile/InserirPassageiro";
 
-        return passageiro.inserirPassageiroVolley(rq, contexto, params, url);
+        return passageiro.inserirPassageiro(rq, contexto, params, url);
     }
 
     public void getAllPassageiros(RequestQueue rq, Context contexto, CPassageiro vp, CRota rota) throws JSONException {
@@ -214,9 +210,6 @@ public class CPassageiro extends Activity implements Serializable {
     public ArrayList<MPassageiro> selecionarPassageiros(){
         return new ArrayList<MPassageiro>();
     }
-    public MPassageiro consultarPassageiro(String nome){
-        return passageiro.consultarPassageiro(nome);
-    }
 
     public void atualizarPassageiro(RequestQueue rq, Context contexto, MPassageiro p){
 
@@ -232,8 +225,7 @@ public class CPassageiro extends Activity implements Serializable {
         params.put("cidade", p.getCidade());
         params.put("estado", p.getEstado());
         params.put("bairro", p.getBairro());
-        //params.put("idDestino", "1");//TA CHUMBADO PRA TESTE!!!!!!
-        params.put("idMotorista", "1");//TA CHUMBADO PRA TESTE!!!!!!
+        params.put("idMotorista", "1");
         params.put("nomeResponsavel", p.getNomeResponsavel());
         params.put("telefoneResponsavel", p.getTelefoneResponsavel());
 

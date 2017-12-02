@@ -8,7 +8,7 @@ import fgv.Model.MDestino;
 
 public class CDestino {
 
-    public void inserirDestino(){
+    public void cadastrarDestino(){
 
     }
 
@@ -17,15 +17,10 @@ public class CDestino {
     }
 
     public MDestino consultarDestino(){
-
-        MDestino destino = new MDestino();
-
-
-        return destino;
+        return new MDestino();
     }
 
     public void excluirDestino(){
 
     }
-
 }
